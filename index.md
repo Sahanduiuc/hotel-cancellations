@@ -1,4 +1,4 @@
-# Predicting hotel cancellations with ExtraTreesClassifier and Logistic Regression
+# Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
 
 Hotel cancellations can cause issues for managers. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
