@@ -67,7 +67,7 @@ data=b.apply(lambda col: pd.factorize(col, sort=True)[0])
 data
 ```
 
-(factorized)
+![factorized](factorized.png)
 
 The variables are then stacked together under the numpy format:
 
