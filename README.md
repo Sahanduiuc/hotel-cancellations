@@ -4,14 +4,11 @@ Hotel cancellations can cause issues for managers. Not only is there the lost re
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. I decided to use the Algarve Hotel dataset available from Science Direct for this problem.
-
-https://www.sciencedirect.com/science/article/pii/S2352340918315191
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. I decided to use the Algarve Hotel dataset available from [Science Direct].(https://www.sciencedirect.com/science/article/pii/S2352340918315191) for this problem.
 
 ## Data Processing
 
 Firstly, the relevant libraries were imported and the relevant data type for each variable was classified:
-
 
 ```
 import os
@@ -133,14 +130,19 @@ Here are the generated readings:
  6.70055352e-03 7.66243438e-01]
 ```
 From the above, the identified features of importance are lead time, country, market segment, deposit type, customer type, and reservation status.
+
 The variables are redefined in the stack:
+
 ```
 y1 = y
 x1 = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
 x1 = sm.add_constant(x1, prepend=True)
 ```
+
 ## Logistic Regression
+
 Now, the logistic regression is generated:
+
 ```
 x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=0)
 
@@ -158,6 +160,7 @@ print(result.summary())
 ```
 
 Here are the results:
+
 ```
 Training set score: 0.993
 Test set score: 0.992
@@ -185,14 +188,18 @@ x5            -0.0812      0.060     -1.345      0.179      -0.199       0.037
 x6            -7.2326      0.075    -96.874      0.000      -7.379      -7.086
 ==============================================================================
 ```
+
 Now, the logistic regression is used to predict cancellations for the test data, and a confusion matrix is generated to determine the incidence of true/false positives and negatives:
+
 ```
 pr = logreg.predict(x1_test)
 from sklearn.metrics import classification_report,confusion_matrix
 print(confusion_matrix(y1_test,pr))
 print(classification_report(y1_test,pr))
 ```
+
 The confusion matrix is generated:
+
 ```
 [[7267    0]
  [  76 2672]]
@@ -205,8 +212,11 @@ The confusion matrix is generated:
    macro avg       0.99      0.99      0.99     10015
 weighted avg       0.99      0.99      0.99     10015
 ```
+
 From the above, we see that the accuracy in classification was quite high.
+
 Here is an ROC curve illustrating the true vs false positive rate.
+
 ```
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve
@@ -221,9 +231,13 @@ plt.show()
 (roc curve)
 
 ## Testing against unseen data
+
 When importing the H1.csv dataset, I decided to remove two random rows from the analysis. The reason for this is to use the generated logistic regression in order to determine how the model would work in predicting unseen instances.
+
 A constant 1.5074 is used (as was generated in the regression output), as well as the values for the relevant variables.
+
 *Cancellation*
+
 ```
 # leadtime, country, marketsegment, deptype, custype, reserv
 
@@ -234,11 +248,15 @@ bx1
 pre1 = logreg.predict(bx1)
 pre1
 ```
+
 Result:
+
 ```
 array([1])
 ```
+
 *No cancellation*
+
 ```
 # leadtime, country, marketsegment, deptype, custype, reserv
 #No cancellation
@@ -248,14 +266,18 @@ bx2
 pre2 = logreg.predict(bx2)
 pre2
 ```
+
 *Result*
+
 ```
 array([0])
 ```
+
 In this instance, we can see that the logistic regression correctly predicted the outcome for these two separate customers.
 Let’s come up with a probability for these two same customers.
 
 *Odds of not cancelling*
+
 ```
 # Odds of not cancelling
 sum1=1.5074+(0.0014*38)+(0.0184*91)+(0.1697*5)+(1.1369*0)-(0.0812*2)-(7.2326*1)
@@ -263,11 +285,15 @@ odds=np.exp(sum1)
 probability1=odds/(1+odds)
 probability1
 ```
+
 *Result*
+
 ```
 0.035178771854560434
 ```
+
 *Odds of cancelling*
+
 ```
 # Odds of cancelling
 
@@ -276,10 +302,13 @@ odds=np.exp(sum2)
 probability2=odds/(1+odds)
 probability2
 ```
+
 *Result*
+
 ```
 0.9806723178783029
 ```
+
 We see that the probability of cancellation for the customer that did not cancel was 3.5%, while the probability for the customer that did indeed cancel was 98%.
 This illustrates that the logistic regression was adept at predicting whether or not a cancellation would occur for these two customers.
 
