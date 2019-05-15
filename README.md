@@ -235,7 +235,7 @@ plt.show()
 
 When importing the H1.csv dataset, I decided to remove two random rows from the analysis. The reason for this is to use the generated logistic regression in order to determine how the model would work in predicting unseen instances.
 
-A constant 1.5074 is used (as was generated in the regression output), as well as the values for the relevant variables.
+A constant **1.5074** is used (as was generated in the regression output), as well as the values for the relevant variables.
 
 *Cancellation*
 
