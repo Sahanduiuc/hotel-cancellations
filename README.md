@@ -228,7 +228,8 @@ cutoff=np.argmin(np.abs(thresholds))
 plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fillstyle="none")
 plt.show()
 ```
-(roc curve)
+
+[roc-curve](roc-curve.png)
 
 ## Testing against unseen data
 
