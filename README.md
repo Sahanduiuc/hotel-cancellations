@@ -249,7 +249,7 @@ pre1 = logreg.predict(bx1)
 pre1
 ```
 
-Result:
+*Result:*
 
 ```
 array([1])
