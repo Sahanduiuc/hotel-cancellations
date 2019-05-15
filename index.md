@@ -1,3 +1,10 @@
+[Home](https://mgcodesandstats.github.io/) |
+[Time Series Consulting](https://mgcodesandstats.github.io/time-series-consulting-python-r/) |
+[Portfolio](https://mgcodesandstats.github.io/portfolio/) |
+[Terms and Conditions](https://mgcodesandstats.github.io/terms/) |
+[E-mail me](mailto:contact@michaeljgrogan.com) |
+[LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
+
 # Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
 
 Hotel cancellations can cause issues for managers. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
