@@ -1,4 +1,4 @@
-# hotel-cancellations
+# Predicting hotel cancellations with ExtraTreesClassifier and Logistic Regression
 
 Hotel cancellations can cause issues for managers. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
@@ -219,6 +219,7 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 (roc curve)
+
 ## Testing against unseen data
 When importing the H1.csv dataset, I decided to remove two random rows from the analysis. The reason for this is to use the generated logistic regression in order to determine how the model would work in predicting unseen instances.
 A constant 1.5074 is used (as was generated in the regression output), as well as the values for the relevant variables.
@@ -281,5 +282,6 @@ probability2
 ```
 We see that the probability of cancellation for the customer that did not cancel was 3.5%, while the probability for the customer that did indeed cancel was 98%.
 This illustrates that the logistic regression was adept at predicting whether or not a cancellation would occur for these two customers.
+
 # Conclusion
 This has been an illustration of how a logistic regression can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
