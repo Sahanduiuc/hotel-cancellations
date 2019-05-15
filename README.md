@@ -4,7 +4,7 @@ Hotel cancellations can cause issues for managers. Not only is there the lost re
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. I decided to use the Algarve Hotel dataset available from [Science Direct].(https://www.sciencedirect.com/science/article/pii/S2352340918315191) for this problem.
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. I decided to use the Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) for this problem.
 
 ## Data Processing
 
