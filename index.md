@@ -11,7 +11,7 @@ Hotel cancellations can cause issues for managers. Not only is there the lost re
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used for this analysis.
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 99% classification accuracy was achieved across the test set predictions.
 
 ## Data Processing
 
@@ -240,85 +240,142 @@ plt.show()
 
 ## Testing against unseen data
 
-When importing the H1.csv dataset, I decided to remove two random rows from the analysis. The reason for this is to use the generated logistic regression in order to determine how the model would work in predicting unseen instances.
+Now that the logistic regression has shown a high degree of classification accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
-A constant **1.5074** is used (as was generated in the regression output), as well as the values for the relevant variables.
-
-*Cancellation*
+The second dataset is loaded using pandas, and the relevant variables are factorized:
 
 ```
+h2data = pd.read_csv('H2.csv', dtype=dtypes)
+a=h2data.head()
+b=h2data
+b
+
+seconddata=b.apply(lambda col: pd.factorize(col, sort=True)[0])
+seconddata
+```
+
+![df2](df2.png)
+
+
+The new variables are sorted into a numpy column stack, and a logistic regression is run:
+
+```
+leadtime = seconddata['LeadTime'] #1
+staysweekendnights = seconddata['StaysInWeekendNights'] #2
+staysweeknights = seconddata['StaysInWeekNights'] #3
+adults = seconddata['Adults'] #4
+children = seconddata['Children'] #5
+babies = seconddata['Babies'] #6
+meal = seconddata['Meal'] #7
+country = seconddata['Country'] #8
+marketsegment = seconddata['MarketSegment'] #9
+distributionchannel = seconddata['DistributionChannel'] #10
+isrepeatedguest = seconddata['IsRepeatedGuest'] #11
+previouscancellations = seconddata['PreviousCancellations'] #12
+previousbookingsnotcanceled = seconddata['PreviousBookingsNotCanceled'] #13
+reservedroomtype = seconddata['ReservedRoomType'] #14
+assignedroomtype = seconddata['AssignedRoomType'] #15
+bookingchanges = seconddata['BookingChanges'] #16
+deptype = seconddata['DepositType'] #17
+agent = seconddata['Agent'] #18
+company = seconddata['Company'] #19
+dayswaitinglist = seconddata['DaysInWaitingList'] #20
+custype = seconddata['CustomerType'] #21
+adr = seconddata['ADR'] #22
+rcps = seconddata['RequiredCarParkingSpaces'] #23
+totalsqr = seconddata['TotalOfSpecialRequests'] #24
+reserv = seconddata['ReservationStatus'] #25
+
+
+a = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
+a = sm.add_constant(a, prepend=True)
+IsCanceled = seconddata['IsCanceled']
+b = IsCanceled
+b=b.values
+
+prh2 = logreg.predict(a)
+prh2
+```
+
+The array of predictions is generated once again:
+
+```
+array([0, 1, 1, ..., 0, 0, 0])
+```
+
+A classification matrix is generated:
+
+```
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(b,prh2))
+print(classification_report(b,prh2))
+```
+
+**Classification Output**
+
+```
+[[46228     0]
+ [  916 32186]]
+              precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99     46228
+           1       1.00      0.97      0.99     33102
+
+   micro avg       0.99      0.99      0.99     79330
+   macro avg       0.99      0.99      0.99     79330
+weighted avg       0.99      0.99      0.99     79330
+```
+
+The ROC curve is generated:
+
+```
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve
+falsepos,truepos,thresholds=roc_curve(b,logreg.decision_function(a))
+plt.plot(falsepos,truepos,label="ROC")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+
+cutoff=np.argmin(np.abs(thresholds))
+plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fillstyle="none")
+plt.show()
+```
+
+![roc-curve-2](roc-curve-2.png)
+
+In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no cancellation), the probability of cancellation can also be generated. In the **H2** dataset, two random observations were selected with the relevant values for the explanatory variables plugged into the logistic regression. In the case of the customer that did not cancel, a low probability of 3% is observed, whereas a probability of over 98% is observed for the customer that did cancel.
+
+```
+# Odds of not cancelling for random H2 customer (customer did not cancel)
 # leadtime, country, marketsegment, deptype, custype, reserv
-
-#Cancellation
-bx1 = np.column_stack((1.5074,42,91,5,0,2,0))
-bx1 = sm.add_constant(bx1, prepend=True)
-bx1
-pre1 = logreg.predict(bx1)
-pre1
-```
-
-*Result:*
-
-```
-array([1])
-```
-
-*No cancellation*
-
-```
-# leadtime, country, marketsegment, deptype, custype, reserv
-#No cancellation
-bx2 = np.column_stack((1.5074,38,91,5,0,2,1))
-bx2 = sm.add_constant(bx2, prepend=True)
-bx2
-pre2 = logreg.predict(bx2)
-pre2
-```
-
-*Result*
-
-```
-array([0])
-```
-
-In this instance, we can see that the logistic regression correctly predicted the outcome for these two separate customers.
-Let’s come up with a probability for these two same customers.
-
-*Odds of not cancelling*
-
-```
-# Odds of not cancelling
-sum1=1.5074+(0.0014*38)+(0.0184*91)+(0.1697*5)+(1.1369*0)-(0.0812*2)-(7.2326*1)
+sum1=1.5074+(0.0014*3)+(0.0184*100)+(0.1697*4)+(1.1369*0)-(0.0812*3)-(7.2326*1)
 odds=np.exp(sum1)
 probability1=odds/(1+odds)
 probability1
 ```
 
-*Result*
+Probability:
 
 ```
-0.035178771854560434
+0.030894359478570665
 ```
 
-*Odds of cancelling*
+Here is the probability for the customer that did cancel:
 
 ```
-# Odds of cancelling
-
-sum2=1.5074+(0.0014*42)+(0.0184*91)+(0.1697*5)+(1.1369*0)-(0.0812*2)-(7.2326*0)
+# Odds of cancelling for random H2 customer (customer did cancel)
+# leadtime, country, marketsegment, deptype, custype, reserv
+sum2=1.5074+(0.0014*100)+(0.0184*100)+(0.1697*6)+(1.1369*0)-(0.0812*2)-(7.2326*0)
 odds=np.exp(sum2)
 probability2=odds/(1+odds)
 probability2
 ```
 
-*Result*
+Probability:
 
 ```
-0.9806723178783029
+0.987171822610922
 ```
-
-We see that the probability of cancellation for the customer that did not cancel was 3.5%, while the probability for the customer that did indeed cancel was 98%.
-This illustrates that the logistic regression was adept at predicting whether or not a cancellation would occur for these two customers.
 
 # Conclusion
 This has been an illustration of how a logistic regression can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
