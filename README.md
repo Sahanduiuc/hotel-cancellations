@@ -254,6 +254,9 @@ seconddata=b.apply(lambda col: pd.factorize(col, sort=True)[0])
 seconddata
 ```
 
+![df2](df2.png)
+
+
 The new variables are sorted into a numpy column stack, and a logistic regression is run:
 
 ```
@@ -338,6 +341,8 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 
+![roc-curve-2](roc-curve-2.png)
+
 In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no cancellation), the probability of cancellation can also be generated. In the **H2** dataset, two random observations were selected with the relevant values for the explanatory variables plugged into the logistic regression. In the case of the customer that did not cancel, a low probability of 3% is observed, whereas a probability of over 98% is observed for the customer that did cancel.
 
 ```
@@ -355,8 +360,9 @@ Probability:
 0.030894359478570665
 ```
 
-```
+Here is the probability for the customer that did cancel:
 
+```
 # Odds of cancelling for random H2 customer (customer did cancel)
 # leadtime, country, marketsegment, deptype, custype, reserv
 sum2=1.5074+(0.0014*100)+(0.0184*100)+(0.1697*6)+(1.1369*0)-(0.0812*2)-(7.2326*0)
