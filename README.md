@@ -242,5 +242,134 @@ plt.show()
 
 Now that the logistic regression has shown a high degree of classification accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
+The second dataset is loaded using pandas, and the relevant variables are factorized:
+
+```
+h2data = pd.read_csv('H2.csv', dtype=dtypes)
+a=h2data.head()
+b=h2data
+b
+
+seconddata=b.apply(lambda col: pd.factorize(col, sort=True)[0])
+seconddata
+```
+
+The new variables are sorted into a numpy column stack, and a logistic regression is run:
+
+```
+leadtime = seconddata['LeadTime'] #1
+staysweekendnights = seconddata['StaysInWeekendNights'] #2
+staysweeknights = seconddata['StaysInWeekNights'] #3
+adults = seconddata['Adults'] #4
+children = seconddata['Children'] #5
+babies = seconddata['Babies'] #6
+meal = seconddata['Meal'] #7
+country = seconddata['Country'] #8
+marketsegment = seconddata['MarketSegment'] #9
+distributionchannel = seconddata['DistributionChannel'] #10
+isrepeatedguest = seconddata['IsRepeatedGuest'] #11
+previouscancellations = seconddata['PreviousCancellations'] #12
+previousbookingsnotcanceled = seconddata['PreviousBookingsNotCanceled'] #13
+reservedroomtype = seconddata['ReservedRoomType'] #14
+assignedroomtype = seconddata['AssignedRoomType'] #15
+bookingchanges = seconddata['BookingChanges'] #16
+deptype = seconddata['DepositType'] #17
+agent = seconddata['Agent'] #18
+company = seconddata['Company'] #19
+dayswaitinglist = seconddata['DaysInWaitingList'] #20
+custype = seconddata['CustomerType'] #21
+adr = seconddata['ADR'] #22
+rcps = seconddata['RequiredCarParkingSpaces'] #23
+totalsqr = seconddata['TotalOfSpecialRequests'] #24
+reserv = seconddata['ReservationStatus'] #25
+
+
+a = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
+a = sm.add_constant(a, prepend=True)
+IsCanceled = seconddata['IsCanceled']
+b = IsCanceled
+b=b.values
+
+prh2 = logreg.predict(a)
+prh2
+```
+
+The array of predictions is generated once again:
+
+```
+array([0, 1, 1, ..., 0, 0, 0])
+```
+
+A classification matrix is generated:
+
+```
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(b,prh2))
+print(classification_report(b,prh2))
+```
+
+**Classification Output**
+
+```
+[[46228     0]
+ [  916 32186]]
+              precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99     46228
+           1       1.00      0.97      0.99     33102
+
+   micro avg       0.99      0.99      0.99     79330
+   macro avg       0.99      0.99      0.99     79330
+weighted avg       0.99      0.99      0.99     79330
+```
+
+The ROC curve is generated:
+
+```
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve
+falsepos,truepos,thresholds=roc_curve(b,logreg.decision_function(a))
+plt.plot(falsepos,truepos,label="ROC")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+
+cutoff=np.argmin(np.abs(thresholds))
+plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fillstyle="none")
+plt.show()
+```
+
+In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no cancellation), the probability of cancellation can also be generated. In the **H2** dataset, two random observations were selected with the relevant values for the explanatory variables plugged into the logistic regression. In the case of the customer that did not cancel, a low probability of 3% is observed, whereas a probability of over 98% is observed for the customer that did cancel.
+
+```
+# Odds of not cancelling for random H2 customer (customer did not cancel)
+# leadtime, country, marketsegment, deptype, custype, reserv
+sum1=1.5074+(0.0014*3)+(0.0184*100)+(0.1697*4)+(1.1369*0)-(0.0812*3)-(7.2326*1)
+odds=np.exp(sum1)
+probability1=odds/(1+odds)
+probability1
+```
+
+Probability:
+
+```
+0.030894359478570665
+```
+
+```
+
+# Odds of cancelling for random H2 customer (customer did cancel)
+# leadtime, country, marketsegment, deptype, custype, reserv
+sum2=1.5074+(0.0014*100)+(0.0184*100)+(0.1697*6)+(1.1369*0)-(0.0812*2)-(7.2326*0)
+odds=np.exp(sum2)
+probability2=odds/(1+odds)
+probability2
+```
+
+Probability:
+
+```
+0.987171822610922
+```
+
 # Conclusion
 This has been an illustration of how a logistic regression can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
