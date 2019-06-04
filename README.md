@@ -171,6 +171,12 @@ logreg
 print("Training set score: {:.3f}".format(logreg.score(x1_train,y1_train)))
 print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
 ```
+The following training and test set scores were generated:
+```
+Training set score: 0.987
+Test set score: 0.987
+```
+
 ```
 import statsmodels.api as sm
 logit_model=sm.Logit(y1,x1)
@@ -217,16 +223,16 @@ print(classification_report(y1_test,pr))
 The confusion matrix is generated:
 
 ```
-[[7267    0]
- [  76 2672]]
+[[2531    0]
+ [  65 2404]]
               precision    recall  f1-score   support
 
-           0       0.99      1.00      0.99      7267
-           1       1.00      0.97      0.99      2748
+           0       0.97      1.00      0.99      2531
+           1       1.00      0.97      0.99      2469
 
-   micro avg       0.99      0.99      0.99     10015
-   macro avg       0.99      0.99      0.99     10015
-weighted avg       0.99      0.99      0.99     10015
+   micro avg       0.99      0.99      0.99      5000
+   macro avg       0.99      0.99      0.99      5000
+weighted avg       0.99      0.99      0.99      5000
 ```
 
 From the above, we see that the accuracy in classification was quite high.
@@ -245,7 +251,7 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 
-![roc-curve](roc-curve.png)
+![roc-curve-1](roc-curve-1.png)
 
 ## Testing against unseen data
 
@@ -323,16 +329,16 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[46228     0]
- [  916 32186]]
+[[7004    0]
+ [ 137 4859]]
               precision    recall  f1-score   support
 
-           0       0.98      1.00      0.99     46228
-           1       1.00      0.97      0.99     33102
+           0       0.98      1.00      0.99      7004
+           1       1.00      0.97      0.99      4996
 
-   micro avg       0.99      0.99      0.99     79330
-   macro avg       0.99      0.99      0.99     79330
-weighted avg       0.99      0.99      0.99     79330
+   micro avg       0.99      0.99      0.99     12000
+   macro avg       0.99      0.99      0.99     12000
+weighted avg       0.99      0.99      0.99     12000
 ```
 
 The ROC curve is generated:
@@ -356,9 +362,10 @@ In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no can
 
 ```
 # Odds of not cancelling for random H2 customer (customer did not cancel)
-# leadtime, country, marketsegment, deptype, custype, reserv
-sum1=1.5074+(0.0014*3)+(0.0184*100)+(0.1697*4)+(1.1369*0)-(0.0812*3)-(7.2326*1)
+# leadtime,country,custype,deptype,reserv
+sum1=2.3173+(0.0017*0)+(0.0192*93)-(0.1166*2)+(1.1915*0)-(6.2776*1)
 odds=np.exp(sum1)
+odds
 probability1=odds/(1+odds)
 probability1
 ```
@@ -366,16 +373,17 @@ probability1
 Probability:
 
 ```
-0.030894359478570665
+0.08257226231530848
 ```
 
 Here is the probability for the customer that did cancel:
 
 ```
 # Odds of cancelling for random H2 customer (customer did cancel)
-# leadtime, country, marketsegment, deptype, custype, reserv
-sum2=1.5074+(0.0014*100)+(0.0184*100)+(0.1697*6)+(1.1369*0)-(0.0812*2)-(7.2326*0)
+# leadtime,country,custype,deptype,reserv
+sum2=2.3173+(0.0017*179)+(0.0192*84)-(0.1166*2)+(1.1915*1)-(6.2776*0)
 odds=np.exp(sum2)
+odds
 probability2=odds/(1+odds)
 probability2
 ```
@@ -383,7 +391,7 @@ probability2
 Probability:
 
 ```
-0.987171822610922
+0.9944737267167475
 ```
 
 # Conclusion
