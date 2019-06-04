@@ -15,7 +15,13 @@ To investigate how machine learning can aid in this task, I decided to generate 
 
 ## Data Processing
 
-Firstly, the relevant libraries were imported and the relevant data type for each variable was classified:
+At the outset, there is the consideration of **overfitting** when building the model with the data.
+
+For example, in the original H1 file, there were **11,122** cancellations while **28,938** bookings did not cancel. Therefore, non-cancellations could likely end up being overrepresented in the model. For this reason, the H1 dataset was filtered to include **10,000** cancellations and **10,000** non-cancellations.
+
+For the test dataset (H2.csv), **12,000** observations were selected at random, irrespective of whether the booking was cancelled or not.
+
+The relevant libraries were imported and the relevant data type for each variable was classified:
 
 ```
 import os
