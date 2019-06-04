@@ -146,7 +146,7 @@ Here is a breakdown of the feature importance in Excel format:
 
 ![feature-score](feature-score.png)
 
-From the above, the identified features of importance are reservation status, country, required car parking spaces, deposit type, customer type, and lead time.
+From the above, the identified features of importance are **reservation status**, **country**, **required car parking spaces**, **deposit type**, **customer type**, and **lead time**.
 
 ## Logistic Regression
 
