@@ -11,7 +11,7 @@ Hotel cancellations can cause issues for many businesses in the industry. Not on
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 98% classification accuracy was achieved across the test set predictions.
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. For this example, both hotels are based in Portugal. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 98% classification accuracy was achieved across the test set predictions.
 
 ## Data Processing
 
@@ -146,7 +146,7 @@ Here is a breakdown of the feature importance in Excel format:
 
 ![feature-score](feature-score.png)
 
-From the above, the identified features of importance are reservation status, country, required car parking spaces, deposit type, customer type, and lead time.
+From the above, the identified features of importance are **reservation status**, **country**, **required car parking spaces**, **deposit type**, **customer type**, and **lead time**.
 
 ## Logistic Regression
 
@@ -315,7 +315,7 @@ prh2
 The array of predictions is generated once again:
 
 ```
-array([0, 1, 1, ..., 0, 0, 0])
+array([1, 0, 0, ..., 0, 0, 1])
 ```
 
 A classification matrix is generated:
