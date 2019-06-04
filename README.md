@@ -315,7 +315,7 @@ prh2
 The array of predictions is generated once again:
 
 ```
-array([0, 1, 1, ..., 0, 0, 0])
+array([1, 0, 0, ..., 0, 0, 1])
 ```
 
 A classification matrix is generated:
