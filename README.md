@@ -11,7 +11,7 @@ Hotel cancellations can cause issues for many businesses in the industry. Not on
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 99% classification accuracy was achieved across the test set predictions.
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 98% classification accuracy was achieved across the test set predictions.
 
 ## Data Processing
 
@@ -142,19 +142,25 @@ Here are the generated readings:
  2.77019676e-04 9.73881159e-03 9.06862237e-03 3.56449786e-02
  5.91657374e-03 7.31350667e-01]
 ```
-From the above, the identified features of importance are lead time, country, market segment, deposit type, customer type, and reservation status.
+Here is a breakdown of the feature importance in Excel format:
 
-The variables are redefined in the stack:
+![feature-score](feature-score.png)
 
-```
-y1 = y
-x1 = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
-x1 = sm.add_constant(x1, prepend=True)
-```
+From the above, the identified features of importance are reservation status, country, required car parking spaces, deposit type, customer type, and lead time.
 
 ## Logistic Regression
 
-Now, the logistic regression is generated:
+The logistic regression was generated using these six explanatory variables:
+
+![logistic-regression-error](logistic-regression-error.png)
+
+However, we note that there is an error: "ConvergenceWarning: Maximum Likelihood optimization failed to converge".
+
+Of the six variables, required car parking spaces showed a p-value of 1, suggesting this variable is highly insignficant in predicting cancellations.
+
+Therefore, this variable was dropped from the model and the regression was run again.
+
+Then, the data was split into training and test data, 
 
 ```
 x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=0)
@@ -163,42 +169,39 @@ logreg = LogisticRegression().fit(x1_train,y1_train)
 logreg
 
 print("Training set score: {:.3f}".format(logreg.score(x1_train,y1_train)))
-
 print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
-
+```
+```
 import statsmodels.api as sm
 logit_model=sm.Logit(y1,x1)
 result=logit_model.fit()
 print(result.summary())
 ```
 
-Here are the results:
+Here are the updated results:
 
 ```
-Training set score: 0.993
-Test set score: 0.992
 Optimization terminated successfully.
-         Current function value: 0.100929
+         Current function value: 0.157922
          Iterations 8
                            Logit Regression Results                           
 ==============================================================================
-Dep. Variable:                      y   No. Observations:                40058
-Model:                          Logit   Df Residuals:                    40051
-Method:                           MLE   Df Model:                            6
-Date:                Tue, 14 May 2019   Pseudo R-squ.:                  0.8291
-Time:                        19:05:49   Log-Likelihood:                -4043.0
-converged:                       True   LL-Null:                       -23662.
+Dep. Variable:                      y   No. Observations:                20000
+Model:                          Logit   Df Residuals:                    19994
+Method:                           MLE   Df Model:                            5
+Date:                Tue, 04 Jun 2019   Pseudo R-squ.:                  0.7722
+Time:                        14:22:55   Log-Likelihood:                -3158.4
+converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          1.5074      0.214      7.029      0.000       1.087       1.928
-x1             0.0014      0.000      3.706      0.000       0.001       0.002
-x2             0.0184      0.001     14.251      0.000       0.016       0.021
-x3             0.1697      0.027      6.223      0.000       0.116       0.223
-x4             1.1369      0.125      9.090      0.000       0.892       1.382
-x5            -0.0812      0.060     -1.345      0.179      -0.199       0.037
-x6            -7.2326      0.075    -96.874      0.000      -7.379      -7.086
+const          2.3173      0.173     13.402      0.000       1.978       2.656
+x1             0.0017      0.000      4.120      0.000       0.001       0.002
+x2             0.0192      0.001     12.906      0.000       0.016       0.022
+x3            -0.1166      0.063     -1.847      0.065      -0.240       0.007
+x4             1.1915      0.151      7.888      0.000       0.895       1.488
+x5            -6.2776      0.079    -79.618      0.000      -6.432      -6.123
 ==============================================================================
 ```
 
