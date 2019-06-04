@@ -7,7 +7,7 @@
 
 # Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
 
-Hotel cancellations can cause issues for managers. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
+Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
