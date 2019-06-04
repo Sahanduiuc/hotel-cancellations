@@ -7,15 +7,21 @@
 
 # Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
 
-Hotel cancellations can cause issues for managers. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
+Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 99% classification accuracy was achieved across the test set predictions.
+To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 98% classification accuracy was achieved across the test set predictions.
 
 ## Data Processing
 
-Firstly, the relevant libraries were imported and the relevant data type for each variable was classified:
+At the outset, there is the consideration of **overfitting** when building the model with the data.
+
+For example, in the original H1 file, there were **11,122** cancellations while **28,938** bookings did not cancel. Therefore, non-cancellations could likely end up being overrepresented in the model. For this reason, the H1 dataset was filtered to include **10,000** cancellations and **10,000** non-cancellations.
+
+For the test dataset (H2.csv), **12,000** observations were selected at random, irrespective of whether the booking was cancelled or not.
+
+The relevant libraries were imported and the relevant data type for each variable was classified:
 
 ```
 import os
@@ -128,27 +134,33 @@ print(model.feature_importances_)
 Here are the generated readings:
 
 ```
-[0.00000000e+00 2.80773623e-02 2.87638739e-03 5.72799343e-03
- 1.72631728e-03 1.64816050e-03 2.23887272e-04 2.59074686e-03
- 3.76929953e-02 2.09040742e-02 3.63074785e-03 3.40060409e-03
- 9.81971773e-03 5.64723064e-04 3.11625309e-03 8.50316994e-03
- 4.42794922e-03 4.86811986e-02 4.81089533e-03 1.07322025e-03
- 8.82583550e-04 8.32794531e-03 8.61034596e-03 1.97387302e-02
- 6.70055352e-03 7.66243438e-01]
+[0.00000000e+00 2.64547601e-02 3.76477525e-03 1.02176989e-02
+ 2.03326905e-03 4.70831050e-03 2.94376622e-04 2.50857973e-03
+ 5.85259965e-02 1.48634627e-02 7.68438817e-03 5.50781494e-03
+ 8.19894673e-03 6.67289269e-04 2.34311227e-03 4.33907043e-03
+ 3.37021921e-03 4.23563715e-02 8.46898382e-03 1.69590164e-03
+ 2.77019676e-04 9.73881159e-03 9.06862237e-03 3.56449786e-02
+ 5.91657374e-03 7.31350667e-01]
 ```
-From the above, the identified features of importance are lead time, country, market segment, deposit type, customer type, and reservation status.
+Here is a breakdown of the feature importance in Excel format:
 
-The variables are redefined in the stack:
+![feature-score](feature-score.png)
 
-```
-y1 = y
-x1 = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
-x1 = sm.add_constant(x1, prepend=True)
-```
+From the above, the identified features of importance are reservation status, country, required car parking spaces, deposit type, customer type, and lead time.
 
 ## Logistic Regression
 
-Now, the logistic regression is generated:
+The logistic regression was generated using these six explanatory variables:
+
+![logistic-regression-error](logistic-regression-error.png)
+
+However, we note that there is an error: "ConvergenceWarning: Maximum Likelihood optimization failed to converge".
+
+Of the six variables, required car parking spaces showed a p-value of 1, suggesting this variable is highly insignficant in predicting cancellations.
+
+Therefore, this variable was dropped from the model and the regression was run again.
+
+Then, the data was split into training and test data, 
 
 ```
 x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=0)
@@ -157,42 +169,45 @@ logreg = LogisticRegression().fit(x1_train,y1_train)
 logreg
 
 print("Training set score: {:.3f}".format(logreg.score(x1_train,y1_train)))
-
 print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
+```
+The following training and test set scores were generated:
+```
+Training set score: 0.987
+Test set score: 0.987
+```
 
+```
 import statsmodels.api as sm
 logit_model=sm.Logit(y1,x1)
 result=logit_model.fit()
 print(result.summary())
 ```
 
-Here are the results:
+Here are the updated results:
 
 ```
-Training set score: 0.993
-Test set score: 0.992
 Optimization terminated successfully.
-         Current function value: 0.100929
+         Current function value: 0.157922
          Iterations 8
                            Logit Regression Results                           
 ==============================================================================
-Dep. Variable:                      y   No. Observations:                40058
-Model:                          Logit   Df Residuals:                    40051
-Method:                           MLE   Df Model:                            6
-Date:                Tue, 14 May 2019   Pseudo R-squ.:                  0.8291
-Time:                        19:05:49   Log-Likelihood:                -4043.0
-converged:                       True   LL-Null:                       -23662.
+Dep. Variable:                      y   No. Observations:                20000
+Model:                          Logit   Df Residuals:                    19994
+Method:                           MLE   Df Model:                            5
+Date:                Tue, 04 Jun 2019   Pseudo R-squ.:                  0.7722
+Time:                        14:22:55   Log-Likelihood:                -3158.4
+converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          1.5074      0.214      7.029      0.000       1.087       1.928
-x1             0.0014      0.000      3.706      0.000       0.001       0.002
-x2             0.0184      0.001     14.251      0.000       0.016       0.021
-x3             0.1697      0.027      6.223      0.000       0.116       0.223
-x4             1.1369      0.125      9.090      0.000       0.892       1.382
-x5            -0.0812      0.060     -1.345      0.179      -0.199       0.037
-x6            -7.2326      0.075    -96.874      0.000      -7.379      -7.086
+const          2.3173      0.173     13.402      0.000       1.978       2.656
+x1             0.0017      0.000      4.120      0.000       0.001       0.002
+x2             0.0192      0.001     12.906      0.000       0.016       0.022
+x3            -0.1166      0.063     -1.847      0.065      -0.240       0.007
+x4             1.1915      0.151      7.888      0.000       0.895       1.488
+x5            -6.2776      0.079    -79.618      0.000      -6.432      -6.123
 ==============================================================================
 ```
 
@@ -208,16 +223,16 @@ print(classification_report(y1_test,pr))
 The confusion matrix is generated:
 
 ```
-[[7267    0]
- [  76 2672]]
+[[2531    0]
+ [  65 2404]]
               precision    recall  f1-score   support
 
-           0       0.99      1.00      0.99      7267
-           1       1.00      0.97      0.99      2748
+           0       0.97      1.00      0.99      2531
+           1       1.00      0.97      0.99      2469
 
-   micro avg       0.99      0.99      0.99     10015
-   macro avg       0.99      0.99      0.99     10015
-weighted avg       0.99      0.99      0.99     10015
+   micro avg       0.99      0.99      0.99      5000
+   macro avg       0.99      0.99      0.99      5000
+weighted avg       0.99      0.99      0.99      5000
 ```
 
 From the above, we see that the accuracy in classification was quite high.
@@ -236,7 +251,7 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 
-![roc-curve](roc-curve.png)
+![roc-curve-1](roc-curve-1.png)
 
 ## Testing against unseen data
 
@@ -314,16 +329,16 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[46228     0]
- [  916 32186]]
+[[7004    0]
+ [ 137 4859]]
               precision    recall  f1-score   support
 
-           0       0.98      1.00      0.99     46228
-           1       1.00      0.97      0.99     33102
+           0       0.98      1.00      0.99      7004
+           1       1.00      0.97      0.99      4996
 
-   micro avg       0.99      0.99      0.99     79330
-   macro avg       0.99      0.99      0.99     79330
-weighted avg       0.99      0.99      0.99     79330
+   micro avg       0.99      0.99      0.99     12000
+   macro avg       0.99      0.99      0.99     12000
+weighted avg       0.99      0.99      0.99     12000
 ```
 
 The ROC curve is generated:
@@ -347,9 +362,10 @@ In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no can
 
 ```
 # Odds of not cancelling for random H2 customer (customer did not cancel)
-# leadtime, country, marketsegment, deptype, custype, reserv
-sum1=1.5074+(0.0014*3)+(0.0184*100)+(0.1697*4)+(1.1369*0)-(0.0812*3)-(7.2326*1)
+# leadtime,country,custype,deptype,reserv
+sum1=2.3173+(0.0017*0)+(0.0192*93)-(0.1166*2)+(1.1915*0)-(6.2776*1)
 odds=np.exp(sum1)
+odds
 probability1=odds/(1+odds)
 probability1
 ```
@@ -357,16 +373,17 @@ probability1
 Probability:
 
 ```
-0.030894359478570665
+0.08257226231530848
 ```
 
 Here is the probability for the customer that did cancel:
 
 ```
 # Odds of cancelling for random H2 customer (customer did cancel)
-# leadtime, country, marketsegment, deptype, custype, reserv
-sum2=1.5074+(0.0014*100)+(0.0184*100)+(0.1697*6)+(1.1369*0)-(0.0812*2)-(7.2326*0)
+# leadtime,country,custype,deptype,reserv
+sum2=2.3173+(0.0017*179)+(0.0192*84)-(0.1166*2)+(1.1915*1)-(6.2776*0)
 odds=np.exp(sum2)
+odds
 probability2=odds/(1+odds)
 probability2
 ```
@@ -374,7 +391,7 @@ probability2
 Probability:
 
 ```
-0.987171822610922
+0.9944737267167475
 ```
 
 # Conclusion
