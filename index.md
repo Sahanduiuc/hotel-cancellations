@@ -5,13 +5,13 @@
 [E-mail me](mailto:contact@michaeljgrogan.com) |
 [LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
 
-# Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
+# Predicting Hotel Cancellations with ExtraTreesClassifier and Support Vector Machines
 
 Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
 Data analytics can help to overcome this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
 
-To investigate how machine learning can aid in this task, I decided to generate a logistic regression in Python to determine whether cancellations can be accurately predicted with this model. For this example, both hotels are based in Portugal. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon. A 98% classification accuracy was achieved across the test set predictions.
+To investigate how machine learning can aid in this task, the **ExtraTreesClassifer**, **logistic regression**, and **support vector machine** models were employed in Python to determine whether cancellations can be accurately predicted with this model. For this example, both hotels are based in Portugal. The Algarve Hotel dataset available from [Science Direct](https://www.sciencedirect.com/science/article/pii/S2352340918315191) was used to train and validate the model, and then the logistic regression was used to generate predictions on a second dataset for a hotel in Lisbon.
 
 ## Data Processing
 
@@ -134,13 +134,13 @@ print(model.feature_importances_)
 Here are the generated readings:
 
 ```
-[0.00000000e+00 2.64547601e-02 3.76477525e-03 1.02176989e-02
- 2.03326905e-03 4.70831050e-03 2.94376622e-04 2.50857973e-03
- 5.85259965e-02 1.48634627e-02 7.68438817e-03 5.50781494e-03
- 8.19894673e-03 6.67289269e-04 2.34311227e-03 4.33907043e-03
- 3.37021921e-03 4.23563715e-02 8.46898382e-03 1.69590164e-03
- 2.77019676e-04 9.73881159e-03 9.06862237e-03 3.56449786e-02
- 5.91657374e-03 7.31350667e-01]
+[0.00000000e+00 2.36504430e-02 2.65915082e-03 3.40313029e-03
+ 3.50712001e-03 1.67339965e-03 2.97023878e-04 1.58653873e-03
+ 3.91496135e-02 1.85636966e-02 2.22467425e-03 5.43228409e-03
+ 5.89261930e-03 9.18391152e-04 2.70472970e-03 6.05852112e-03
+ 5.39940598e-03 2.44619382e-02 8.44330541e-03 1.28580667e-03
+ 5.00680306e-04 9.39879434e-03 5.81957644e-03 6.67617266e-02
+ 4.81097875e-03 7.55396451e-01]
 ```
 Here is a breakdown of the feature importance in Excel format:
 
@@ -148,19 +148,15 @@ Here is a breakdown of the feature importance in Excel format:
 
 From the above, the top six identified features of importance are **reservation status**, **country**, **required car parking spaces**, **deposit type**, **customer type**, and **lead time**.
 
+However, a couple of caveats worth mentioning:
+
+- **Reservation status** cannot be used to predict hotel cancellations as the two are highly correlated, i.e. if the reservation status is cancelled, then this variable will already reflect this.
+
+- When an initial logistic regression was run, **customer type** and **required car parking spaces** were shown as insignificant. Therefore, the regression was run again as below with these variables having been dropped from the model.
+
 ## Logistic Regression
 
-The logistic regression was generated using these six explanatory variables:
-
-![logistic-regression-error](logistic-regression-error.png)
-
-However, we note that there is an error: "ConvergenceWarning: Maximum Likelihood optimization failed to converge".
-
-Of the six variables, required car parking spaces showed a p-value of 1, suggesting this variable is highly insignficant in predicting cancellations.
-
-Therefore, this variable was dropped from the model and the regression was run again.
-
-Then, the data was split into training and test data, 
+The data was split into training and test data, and the logistic regression was generated:
 
 ```
 x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=0)
@@ -173,9 +169,10 @@ print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
 ```
 The following training and test set scores were generated:
 ```
-Training set score: 0.987
-Test set score: 0.987
+Training set score: 0.699
+Test set score: 0.697
 ```
+Then, the coefficients for the logistic regression itself were generated:
 
 ```
 import statsmodels.api as sm
@@ -188,26 +185,24 @@ Here are the updated results:
 
 ```
 Optimization terminated successfully.
-         Current function value: 0.157922
-         Iterations 8
+         Current function value: 0.596248
+         Iterations 7
                            Logit Regression Results                           
 ==============================================================================
 Dep. Variable:                      y   No. Observations:                20000
-Model:                          Logit   Df Residuals:                    19994
-Method:                           MLE   Df Model:                            5
-Date:                Tue, 04 Jun 2019   Pseudo R-squ.:                  0.7722
-Time:                        14:22:55   Log-Likelihood:                -3158.4
+Model:                          Logit   Df Residuals:                    19996
+Method:                           MLE   Df Model:                            3
+Date:                Wed, 05 Jun 2019   Pseudo R-squ.:                  0.1398
+Time:                        13:39:05   Log-Likelihood:                -11925.
 converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          2.3173      0.173     13.402      0.000       1.978       2.656
-x1             0.0017      0.000      4.120      0.000       0.001       0.002
-x2             0.0192      0.001     12.906      0.000       0.016       0.022
-x3            -0.1166      0.063     -1.847      0.065      -0.240       0.007
-x4             1.1915      0.151      7.888      0.000       0.895       1.488
-x5            -6.2776      0.079    -79.618      0.000      -6.432      -6.123
+const         -2.1536      0.050    -43.353      0.000      -2.251      -2.056
+x1             0.0056      0.000     32.378      0.000       0.005       0.006
+x2             0.0237      0.001     36.517      0.000       0.022       0.025
+x3             2.1095      0.104     20.360      0.000       1.906       2.313
 ==============================================================================
 ```
 
@@ -223,19 +218,17 @@ print(classification_report(y1_test,pr))
 The confusion matrix is generated:
 
 ```
-[[2531    0]
- [  65 2404]]
+[[1898  633]
+ [ 883 1586]]
               precision    recall  f1-score   support
 
-           0       0.97      1.00      0.99      2531
-           1       1.00      0.97      0.99      2469
+           0       0.68      0.75      0.71      2531
+           1       0.71      0.64      0.68      2469
 
-   micro avg       0.99      0.99      0.99      5000
-   macro avg       0.99      0.99      0.99      5000
-weighted avg       0.99      0.99      0.99      5000
+   micro avg       0.70      0.70      0.70      5000
+   macro avg       0.70      0.70      0.70      5000
+weighted avg       0.70      0.70      0.70      5000
 ```
-
-From the above, we see that the accuracy in classification was quite high.
 
 Here is an ROC curve illustrating the true vs false positive rate.
 
@@ -251,11 +244,52 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 
-![roc-curve-1](roc-curve-1.png)
+![roccurve1](roccurve1.png)
+
+## Support Vector Machine (SVM) generation
+
+The above model has shown a **69%** classification accuracy in determining whether a customer will cancel. The prediction for non-cancellations was **68%** based on precision while it was **71%** for cancellations (also based on precision).
+
+Therefore, an SVM was generated using the training and validation data to determine whether this model would yield higher classification accuracy.
+
+```
+from sklearn import svm
+clf = svm.SVC(gamma='scale')
+clf.fit(x1, y1)  
+prclf = clf.predict(x1_test)
+prclf
+```
+
+A new prediction array is generated:
+
+```
+array([1, 0, 0, ..., 1, 1, 0])
+```
+
+Here is the new ROC curve generated:
+
+![roccurve2](roccurve2.png)
+
+This is the updated confusion matrix:
+
+```
+[[2078  453]
+ [ 961 1508]]
+              precision    recall  f1-score   support
+
+           0       0.68      0.82      0.75      2531
+           1       0.77      0.61      0.68      2469
+
+   micro avg       0.72      0.72      0.72      5000
+   macro avg       0.73      0.72      0.71      5000
+weighted avg       0.73      0.72      0.71      5000
+```
+
+The overall accuracy has increased to **71%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
-Now that the logistic regression has shown a high degree of classification accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
+Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regrrecallession generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
 The second dataset is loaded using pandas, and the relevant variables are factorized:
 
@@ -302,20 +336,20 @@ totalsqr = seconddata['TotalOfSpecialRequests'] #24
 reserv = seconddata['ReservationStatus'] #25
 
 
-a = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
+a = np.column_stack((leadtime,country,deptype))
 a = sm.add_constant(a, prepend=True)
 IsCanceled = seconddata['IsCanceled']
 b = IsCanceled
 b=b.values
 
-prh2 = logreg.predict(a)
+prh2 = clf.predict(a)
 prh2
 ```
 
 The array of predictions is generated once again:
 
 ```
-array([1, 0, 0, ..., 0, 0, 1])
+array([0, 0, 1, ..., 0, 1, 0])
 ```
 
 A classification matrix is generated:
@@ -329,72 +363,25 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[7004    0]
- [ 137 4859]]
+[[5652 1352]
+ [1993 3003]]
               precision    recall  f1-score   support
 
-           0       0.98      1.00      0.99      7004
-           1       1.00      0.97      0.99      4996
+           0       0.74      0.81      0.77      7004
+           1       0.69      0.60      0.64      4996
 
-   micro avg       0.99      0.99      0.99     12000
-   macro avg       0.99      0.99      0.99     12000
-weighted avg       0.99      0.99      0.99     12000
+   micro avg       0.72      0.72      0.72     12000
+   macro avg       0.71      0.70      0.71     12000
+weighted avg       0.72      0.72      0.72     12000
 ```
 
 The ROC curve is generated:
 
-```
-import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve
-falsepos,truepos,thresholds=roc_curve(b,logreg.decision_function(a))
-plt.plot(falsepos,truepos,label="ROC")
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
+![roccurve3](roccurve3.png)
 
-cutoff=np.argmin(np.abs(thresholds))
-plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fillstyle="none")
-plt.show()
-```
-
-![roc-curve-2](roc-curve-2.png)
-
-In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no cancellation), the probability of cancellation can also be generated. In the **H2** dataset, two random observations were selected with the relevant values for the explanatory variables plugged into the logistic regression. In the case of the customer that did not cancel, a low probability of 3% is observed, whereas a probability of over 98% is observed for the customer that did cancel.
-
-```
-# Odds of not cancelling for random H2 customer (customer did not cancel)
-# leadtime,country,custype,deptype,reserv
-sum1=2.3173+(0.0017*0)+(0.0192*93)-(0.1166*2)+(1.1915*0)-(6.2776*1)
-odds=np.exp(sum1)
-odds
-probability1=odds/(1+odds)
-probability1
-```
-
-Probability:
-
-```
-0.08257226231530848
-```
-
-Here is the probability for the customer that did cancel:
-
-```
-# Odds of cancelling for random H2 customer (customer did cancel)
-# leadtime,country,custype,deptype,reserv
-sum2=2.3173+(0.0017*179)+(0.0192*84)-(0.1166*2)+(1.1915*1)-(6.2776*0)
-odds=np.exp(sum2)
-odds
-probability2=odds/(1+odds)
-probability2
-```
-
-Probability:
-
-```
-0.9944737267167475
-```
+Across the test set, the overall prediction accuracy increased to **72%**, while the accuracy for cancellation incidences fell slightly to **69%**.
 
 # Conclusion
-This has been an illustration of how a logistic regression can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
+This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
 
 Of course, a limitation of these findings is that both hotels under study are based in Portugal. Testing the model across hotels in other countries would help to validate the accuracy of this model further.
