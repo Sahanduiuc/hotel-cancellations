@@ -289,7 +289,7 @@ The overall accuracy has increased to **71%**, but note that the predictive accu
 
 ## Testing against unseen data
 
-Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regrrecallession generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
+Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the SVM generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
 The second dataset is loaded using pandas, and the relevant variables are factorized:
 
