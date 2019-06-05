@@ -5,7 +5,7 @@
 [E-mail me](mailto:contact@michaeljgrogan.com) |
 [LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
 
-# Predicting Hotel Cancellations with ExtraTreesClassifier and Logistic Regression
+# Predicting Hotel Cancellations with ExtraTreesClassifier and Support Vector Machines
 
 Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
