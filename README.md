@@ -134,19 +134,25 @@ print(model.feature_importances_)
 Here are the generated readings:
 
 ```
-[0.00000000e+00 2.64547601e-02 3.76477525e-03 1.02176989e-02
- 2.03326905e-03 4.70831050e-03 2.94376622e-04 2.50857973e-03
- 5.85259965e-02 1.48634627e-02 7.68438817e-03 5.50781494e-03
- 8.19894673e-03 6.67289269e-04 2.34311227e-03 4.33907043e-03
- 3.37021921e-03 4.23563715e-02 8.46898382e-03 1.69590164e-03
- 2.77019676e-04 9.73881159e-03 9.06862237e-03 3.56449786e-02
- 5.91657374e-03 7.31350667e-01]
+[0.00000000e+00 2.36504430e-02 2.65915082e-03 3.40313029e-03
+ 3.50712001e-03 1.67339965e-03 2.97023878e-04 1.58653873e-03
+ 3.91496135e-02 1.85636966e-02 2.22467425e-03 5.43228409e-03
+ 5.89261930e-03 9.18391152e-04 2.70472970e-03 6.05852112e-03
+ 5.39940598e-03 2.44619382e-02 8.44330541e-03 1.28580667e-03
+ 5.00680306e-04 9.39879434e-03 5.81957644e-03 6.67617266e-02
+ 4.81097875e-03 7.55396451e-01]
 ```
 Here is a breakdown of the feature importance in Excel format:
 
 ![feature-score](feature-score.png)
 
 From the above, the top six identified features of importance are **reservation status**, **country**, **required car parking spaces**, **deposit type**, **customer type**, and **lead time**.
+
+However, a couple of caveats worth mentioning:
+
+- **Reservation status** cannot be used to predict hotel cancellations as the two are highly correlated, i.e. if the reservation status is cancelled, then this variable will already reflect this.
+
+- When an initial logistic regression was run, **customer type** and **required car parking spaces** were shown as insignificant. Therefore, the regression was run again as below with these variables having been dropped from the model.
 
 ## Logistic Regression
 
@@ -173,9 +179,10 @@ print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
 ```
 The following training and test set scores were generated:
 ```
-Training set score: 0.987
-Test set score: 0.987
+Training set score: 0.699
+Test set score: 0.697
 ```
+Then, the readings for the logistic regression itself are generated:
 
 ```
 import statsmodels.api as sm
@@ -188,26 +195,24 @@ Here are the updated results:
 
 ```
 Optimization terminated successfully.
-         Current function value: 0.157922
-         Iterations 8
+         Current function value: 0.596248
+         Iterations 7
                            Logit Regression Results                           
 ==============================================================================
 Dep. Variable:                      y   No. Observations:                20000
-Model:                          Logit   Df Residuals:                    19994
-Method:                           MLE   Df Model:                            5
-Date:                Tue, 04 Jun 2019   Pseudo R-squ.:                  0.7722
-Time:                        14:22:55   Log-Likelihood:                -3158.4
+Model:                          Logit   Df Residuals:                    19996
+Method:                           MLE   Df Model:                            3
+Date:                Wed, 05 Jun 2019   Pseudo R-squ.:                  0.1398
+Time:                        13:39:05   Log-Likelihood:                -11925.
 converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          2.3173      0.173     13.402      0.000       1.978       2.656
-x1             0.0017      0.000      4.120      0.000       0.001       0.002
-x2             0.0192      0.001     12.906      0.000       0.016       0.022
-x3            -0.1166      0.063     -1.847      0.065      -0.240       0.007
-x4             1.1915      0.151      7.888      0.000       0.895       1.488
-x5            -6.2776      0.079    -79.618      0.000      -6.432      -6.123
+const         -2.1536      0.050    -43.353      0.000      -2.251      -2.056
+x1             0.0056      0.000     32.378      0.000       0.005       0.006
+x2             0.0237      0.001     36.517      0.000       0.022       0.025
+x3             2.1095      0.104     20.360      0.000       1.906       2.313
 ==============================================================================
 ```
 
@@ -223,16 +228,16 @@ print(classification_report(y1_test,pr))
 The confusion matrix is generated:
 
 ```
-[[2531    0]
- [  65 2404]]
+[[1898  633]
+ [ 883 1586]]
               precision    recall  f1-score   support
 
-           0       0.97      1.00      0.99      2531
-           1       1.00      0.97      0.99      2469
+           0       0.68      0.75      0.71      2531
+           1       0.71      0.64      0.68      2469
 
-   micro avg       0.99      0.99      0.99      5000
-   macro avg       0.99      0.99      0.99      5000
-weighted avg       0.99      0.99      0.99      5000
+   micro avg       0.70      0.70      0.70      5000
+   macro avg       0.70      0.70      0.70      5000
+weighted avg       0.70      0.70      0.70      5000
 ```
 
 From the above, we see that the accuracy in classification was quite high.
@@ -253,9 +258,15 @@ plt.show()
 
 ![roc-curve-1](roc-curve-1.png)
 
+## Support Vector Machine (SVM) generation
+
+The above model has shown a 69% classification accuracy in determining whether a customer will cancel. That said, the prediction for non-cancellations (75% based on recall) is significantly higher than the 64% prediction accuracy for cancellations (also based on recall).
+
+Therefore, 
+
 ## Testing against unseen data
 
-Now that the logistic regression has shown a high degree of classification accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
+Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
 The second dataset is loaded using pandas, and the relevant variables are factorized:
 
