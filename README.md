@@ -156,17 +156,7 @@ However, a couple of caveats worth mentioning:
 
 ## Logistic Regression
 
-The logistic regression was generated using these six explanatory variables:
-
-![logistic-regression-error](logistic-regression-error.png)
-
-However, we note that there is an error: "ConvergenceWarning: Maximum Likelihood optimization failed to converge".
-
-Of the six variables, required car parking spaces showed a p-value of 1, suggesting this variable is highly insignficant in predicting cancellations.
-
-Therefore, this variable was dropped from the model and the regression was run again.
-
-Then, the data was split into training and test data, 
+The data was split into training and test data, and the logistic regression was generated:
 
 ```
 x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=0)
@@ -182,7 +172,7 @@ The following training and test set scores were generated:
 Training set score: 0.699
 Test set score: 0.697
 ```
-Then, the readings for the logistic regression itself are generated:
+Then, the coefficients for the logistic regression itself were generated:
 
 ```
 import statsmodels.api as sm
@@ -240,8 +230,6 @@ The confusion matrix is generated:
 weighted avg       0.70      0.70      0.70      5000
 ```
 
-From the above, we see that the accuracy in classification was quite high.
-
 Here is an ROC curve illustrating the true vs false positive rate.
 
 ```
@@ -260,13 +248,48 @@ plt.show()
 
 ## Support Vector Machine (SVM) generation
 
-The above model has shown a 69% classification accuracy in determining whether a customer will cancel. That said, the prediction for non-cancellations (75% based on recall) is significantly higher than the 64% prediction accuracy for cancellations (also based on recall).
+The above model has shown a **69%** classification accuracy in determining whether a customer will cancel. The prediction for non-cancellations was **68%** based on precision while it was **71%** for cancellations (also based on precision).
 
-Therefore, 
+Therefore, an SVM was generated using the training and validation data to determine whether this model would yield higher classification accuracy.
+
+```
+from sklearn import svm
+clf = svm.SVC(gamma='scale')
+clf.fit(x1, y1)  
+prclf = clf.predict(x1_test)
+prclf
+```
+
+A new prediction array is generated:
+
+```
+array([1, 0, 0, ..., 1, 1, 0])
+```
+
+Here is the new ROC curve generated:
+
+![roc-curve-2](roc-curve-2.png)
+
+This is the updated confusion matrix:
+
+```
+[[2078  453]
+ [ 961 1508]]
+              precision    recall  f1-score   support
+
+           0       0.68      0.82      0.75      2531
+           1       0.77      0.61      0.68      2469
+
+   micro avg       0.72      0.72      0.72      5000
+   macro avg       0.73      0.72      0.71      5000
+weighted avg       0.73      0.72      0.71      5000
+```
+
+The overall accuracy has increased to **71%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
-Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regression generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
+Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the logistic regrrecallession generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
 The second dataset is loaded using pandas, and the relevant variables are factorized:
 
@@ -313,20 +336,20 @@ totalsqr = seconddata['TotalOfSpecialRequests'] #24
 reserv = seconddata['ReservationStatus'] #25
 
 
-a = np.column_stack((leadtime,country,marketsegment,deptype,custype,reserv))
+a = np.column_stack((leadtime,country,deptype))
 a = sm.add_constant(a, prepend=True)
 IsCanceled = seconddata['IsCanceled']
 b = IsCanceled
 b=b.values
 
-prh2 = logreg.predict(a)
+prh2 = clf.predict(a)
 prh2
 ```
 
 The array of predictions is generated once again:
 
 ```
-array([1, 0, 0, ..., 0, 0, 1])
+array([0, 0, 1, ..., 0, 1, 0])
 ```
 
 A classification matrix is generated:
@@ -340,72 +363,25 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[7004    0]
- [ 137 4859]]
+[[5652 1352]
+ [1993 3003]]
               precision    recall  f1-score   support
 
-           0       0.98      1.00      0.99      7004
-           1       1.00      0.97      0.99      4996
+           0       0.74      0.81      0.77      7004
+           1       0.69      0.60      0.64      4996
 
-   micro avg       0.99      0.99      0.99     12000
-   macro avg       0.99      0.99      0.99     12000
-weighted avg       0.99      0.99      0.99     12000
+   micro avg       0.72      0.72      0.72     12000
+   macro avg       0.71      0.70      0.71     12000
+weighted avg       0.72      0.72      0.72     12000
 ```
 
 The ROC curve is generated:
 
-```
-import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve
-falsepos,truepos,thresholds=roc_curve(b,logreg.decision_function(a))
-plt.plot(falsepos,truepos,label="ROC")
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
+![roc-curve-3](roc-curve-3.png)
 
-cutoff=np.argmin(np.abs(thresholds))
-plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fillstyle="none")
-plt.show()
-```
-
-![roc-curve-2](roc-curve-2.png)
-
-In addition to generating a binary prediction (i.e. 1 = cancellation, 0 = no cancellation), the probability of cancellation can also be generated. In the **H2** dataset, two random observations were selected with the relevant values for the explanatory variables plugged into the logistic regression. In the case of the customer that did not cancel, a low probability of 3% is observed, whereas a probability of over 98% is observed for the customer that did cancel.
-
-```
-# Odds of not cancelling for random H2 customer (customer did not cancel)
-# leadtime,country,custype,deptype,reserv
-sum1=2.3173+(0.0017*0)+(0.0192*93)-(0.1166*2)+(1.1915*0)-(6.2776*1)
-odds=np.exp(sum1)
-odds
-probability1=odds/(1+odds)
-probability1
-```
-
-Probability:
-
-```
-0.08257226231530848
-```
-
-Here is the probability for the customer that did cancel:
-
-```
-# Odds of cancelling for random H2 customer (customer did cancel)
-# leadtime,country,custype,deptype,reserv
-sum2=2.3173+(0.0017*179)+(0.0192*84)-(0.1166*2)+(1.1915*1)-(6.2776*0)
-odds=np.exp(sum2)
-odds
-probability2=odds/(1+odds)
-probability2
-```
-
-Probability:
-
-```
-0.9944737267167475
-```
+Across the test set, the overall prediction accuracy increased to **72%**, while the accuracy for cancellation incidences fell slightly to **69%**.
 
 # Conclusion
-This has been an illustration of how a logistic regression can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
+This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
 
 Of course, a limitation of these findings is that both hotels under study are based in Portugal. Testing the model across hotels in other countries would help to validate the accuracy of this model further.
