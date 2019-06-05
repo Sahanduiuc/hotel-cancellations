@@ -244,7 +244,7 @@ plt.plot(falsepos[cutoff],truepos[cutoff],'o',markersize=10,label="cutoff",fills
 plt.show()
 ```
 
-![roc-curve-1](roc-curve-1.png)
+![roccurve1](roccurve1.png)
 
 ## Support Vector Machine (SVM) generation
 
@@ -268,7 +268,7 @@ array([1, 0, 0, ..., 1, 1, 0])
 
 Here is the new ROC curve generated:
 
-![roc-curve-2](roc-curve-2.png)
+![roccurve2](roccurve2.png)
 
 This is the updated confusion matrix:
 
@@ -377,7 +377,7 @@ weighted avg       0.72      0.72      0.72     12000
 
 The ROC curve is generated:
 
-![roc-curve-3](roc-curve-3.png)
+![roccurve3](roccurve3.png)
 
 Across the test set, the overall prediction accuracy increased to **72%**, while the accuracy for cancellation incidences fell slightly to **69%**.
 
