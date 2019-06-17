@@ -380,6 +380,15 @@ The ROC curve is generated:
 
 Across the test set, the overall prediction accuracy increased to **72%**, while the accuracy for cancellation incidences fell slightly to **69%**.
 
+```
+metrics.auc(falsepos, truepos)
+```
+The computed AUC (area under the curve) is **0.74**.
+
+```
+0.7434473849782282
+```
+
 # Conclusion
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
 
