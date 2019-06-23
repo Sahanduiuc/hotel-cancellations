@@ -401,6 +401,20 @@ Here is a snippet of the output:
 
 ![cancellationweeks](cancellationweeks.png)
 
+The time series is visualised, and the autocorrelation and partial autocorrelation plots are generated:
+
+**Time Series**
+
+![time-series](time-series.png)
+
+**Autocorrelation**
+
+![autocorrelation](autocorrelation.png)
+
+**Partial Autocorrelation**
+
+![partial-autocorrelation](partial-autocorrelation.png)
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
