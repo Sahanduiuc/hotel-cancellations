@@ -469,6 +469,10 @@ Total fit time: 23.187 seconds
 
 Based on the lowest AIC, the **SARIMAX(0, 1, 1)x(0, 1, 0, 52)** configuration is identified as the most optimal for modelling the time series.
 
+Here is the output of the model:
+
+![arima-model](arima-model.png)
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
