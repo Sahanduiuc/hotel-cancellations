@@ -389,7 +389,20 @@ The computed AUC (area under the curve) is **0.74**.
 0.7434473849782282
 ```
 
+## ARIMA Modelling of Hotel Cancellations
+
+Having investigated the main drivers of hotel cancellations, it would also be useful to determine whether hotel cancellations can also be predicted in advance. This will be done for the Algarve Hotel (H1.csv).
+
+To do this, cancellations are analysed on a weekly basis (i.e. the number of cancellations summed up per week).
+
+Firstly, data manipulation procedures were carried out to sum up the number of cancellations per week and order them correctly.
+
+Here is a snippet of the output:
+
+![cancellationweeks](cancellationweeks.png)
+
 # Conclusion
+
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
 
 Of course, a limitation of these findings is that both hotels under study are based in Portugal. Testing the model across hotels in other countries would help to validate the accuracy of this model further.
