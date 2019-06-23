@@ -415,6 +415,28 @@ The time series is visualised, and the autocorrelation and partial autocorrelati
 
 ![partial-autocorrelation](partial-autocorrelation.png)
 
+```
+#Dickey-Fuller Test
+result = ts.adfuller(train)
+result
+print('ADF Statistic: %f' % result[0])
+print('p-value: %f' % result[1])
+print('Critical Values:')
+for key, value in result[4].items():
+    print('\t%s: %.3f' % (key, value))
+```
+
+When a Dickey-Fuller test is run, a p-value of less than 0.05 is generated, indicating that the null hypothesis of non-stationarity is rejected (i.e. the data is stationary).
+
+```
+ADF Statistic: -2.998923
+p-value: 0.034995
+Critical Values:
+	1%: -3.498
+	5%: -2.891
+	10%: -2.582
+```
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
