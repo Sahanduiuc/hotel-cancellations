@@ -467,7 +467,7 @@ Fit ARIMA: order=(0, 1, 1) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit t
 Total fit time: 23.187 seconds
 ```
 
-Based on the lowest AIC, the SARIMAX(0, 1, 1)x(0, 1, 0, 52) configuration is identified as the most optimal for modelling the time series.
+Based on the lowest AIC, the **SARIMAX(0, 1, 1)x(0, 1, 0, 52)** configuration is identified as the most optimal for modelling the time series.
 
 # Conclusion
 
