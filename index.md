@@ -4,7 +4,7 @@
 [E-mail me](mailto:contact@michaeljgrogan.com) |
 [LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
 
-# Predicting Hotel Cancellations with ExtraTreesClassifier and Support Vector Machines
+# Predicting Hotel Cancellations with Support Vector Machines and ARIMA
 
 Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
@@ -389,7 +389,117 @@ The computed AUC (area under the curve) is **0.74**.
 0.7434473849782282
 ```
 
+## ARIMA Modelling of Hotel Cancellations
+
+Having investigated the main drivers of hotel cancellations, it would also be useful to determine whether hotel cancellations can also be predicted in advance. This will be done for the Algarve Hotel (H1.csv).
+
+To do this, cancellations are analysed on a weekly basis (i.e. the number of cancellations summed up per week).
+
+Firstly, data manipulation procedures were carried out to sum up the number of cancellations per week and order them correctly.
+
+Here is a snippet of the output:
+
+![cancellationweeks](cancellationweeks.png)
+
+The time series is visualised, and the autocorrelation and partial autocorrelation plots are generated:
+
+**Time Series**
+
+![time-series](time-series.png)
+
+**Autocorrelation**
+
+![autocorrelation](autocorrelation.png)
+
+**Partial Autocorrelation**
+
+![partial-autocorrelation](partial-autocorrelation.png)
+
+```
+#Dickey-Fuller Test
+result = ts.adfuller(train)
+result
+print('ADF Statistic: %f' % result[0])
+print('p-value: %f' % result[1])
+print('Critical Values:')
+for key, value in result[4].items():
+    print('\t%s: %.3f' % (key, value))
+```
+
+When a Dickey-Fuller test is run, a p-value of less than 0.05 is generated, indicating that the null hypothesis of non-stationarity is rejected (i.e. the data is stationary).
+
+```
+ADF Statistic: -2.998923
+p-value: 0.034995
+Critical Values:
+	1%: -3.498
+	5%: -2.891
+	10%: -2.582
+```
+
+An ARIMA model is then run using auto_arima from the **pyramid** library. This is used to select the optimal (p,d,q) coordinates for the ARIMA model.
+
+```
+from pyramid.arima import auto_arima
+Arima_model=auto_arima(train, start_p=0, start_q=0, max_p=10, max_q=10, start_P=0, start_Q=0, max_P=10, max_Q=10, m=52, seasonal=True, trace=True, d=1, D=1, error_action='warn', suppress_warnings=True, random_state = 20, n_fits=30)
+```
+
+The following output is generated:
+
+```
+Fit ARIMA: order=(0, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=574.094, BIC=577.918, Fit time=0.232 seconds
+Fit ARIMA: order=(1, 1, 0) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 1) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 0) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 0) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 0) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(1, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=559.620, BIC=565.356, Fit time=1.638 seconds
+Fit ARIMA: order=(1, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=543.988, BIC=551.637, Fit time=4.383 seconds
+Fit ARIMA: order=(2, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=547.819, BIC=559.291, Fit time=8.437 seconds
+Fit ARIMA: order=(1, 1, 1) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(1, 1, 1) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(1, 1, 1) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=542.114, BIC=547.850, Fit time=2.471 seconds
+Fit ARIMA: order=(0, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=543.993, BIC=551.641, Fit time=3.739 seconds
+Fit ARIMA: order=(1, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=546.114, BIC=555.674, Fit time=2.240 seconds
+Fit ARIMA: order=(0, 1, 1) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(0, 1, 1) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Total fit time: 23.187 seconds
+```
+
+Based on the lowest AIC, the **SARIMAX(0, 1, 1)x(0, 1, 0, 52)** configuration is identified as the most optimal for modelling the time series.
+
+Here is the output of the model:
+
+![arima-model](arima-model.png)
+
+With **90%** of the series used as the training data to build the ARIMA model, the remaining **10%** is now used to test the predictions of the model. Here are the predictions vs the actual data:
+
+![test-vs-predicted](test-vs-predicted.png)
+
+We can see that while the prediction values were lower than the actual test values, the direction of the two series seem to be following each other.
+
+From a business standpoint, a hotel is likely more interested in predicting whether the degree of cancellations will increase/decrease in a particular week - as opposed to the precise number of cancellations - which will no doubt be more subject to error and influenced by extraneous factors.
+
+In this regard, the [mean directional accuracy](https://gist.github.com/bshishov/5dc237f59f019b26145648e2124ca1c9) is used to determine the degree to which the model accurately forecasts the directional changes in cancellation frequency from week to week.
+
+```
+def mda(actual: np.ndarray, predicted: np.ndarray):
+    """ Mean Directional Accuracy """
+    return np.mean((np.sign(actual[1:] - actual[:-1]) == np.sign(predicted[1:] - predicted[:-1])).astype(int))
+```
+
+An MDA of above 80% is yielded:
+
+```
+mda(test, predictions)
+0.8181818181818182
+```
+
+In this regard, the ARIMA model has shown a reasonably high degree of accuracy in predicting directional changes for hotel cancellations across the test set.
+
 # Conclusion
-This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations.
+
+This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 81% accuracy in doing so across the test set.
 
 Of course, a limitation of these findings is that both hotels under study are based in Portugal. Testing the model across hotels in other countries would help to validate the accuracy of this model further.
