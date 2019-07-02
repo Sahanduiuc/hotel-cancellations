@@ -305,7 +305,7 @@ seconddata
 ![df2](df2.png)
 
 
-The new variables are sorted into a numpy column stack, and a logistic regression is run:
+The new variables are sorted into a numpy column stack, and an SVM is run:
 
 ```
 leadtime = seconddata['LeadTime'] #1
