@@ -545,6 +545,8 @@ Here is the overlaid histogram:
 
 ![monte-carlo](monte-carlo.png)
 
+We can see that for the first period (trace 0), the incidence of cancellations is skewed more to the right. This implies that the hotel has a higher chance of seeing more cancellations during the period of July to November - part of this is during the holiday season which implies that cancellation incidences are more volatile.
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 81% accuracy in doing so across the test set.
