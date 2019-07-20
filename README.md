@@ -498,6 +498,53 @@ mda(test, predictions)
 
 In this regard, the ARIMA model has shown a reasonably high degree of accuracy in predicting directional changes for hotel cancellations across the test set.
 
+## Monte Carlo Simulation with pyplot
+
+Often times, a business may wish to conduct a scenario analysis rather than an outright prediction as above.
+
+One useful visualisation that can be used in this instance is an **overlaid histogram**, or a histogram that displays two separate periods.
+
+Let's consider two time periods:
+
+- Period 1: Weeks 1-20 (July 2015 to November 2015)
+- Period 2: Weeks 21-40 (November 2015 to March 2016)
+
+A Monte Carlo simulation is generated, i.e. the mean and standard deviation for each period is calculated, and 1000 random numbers are generated using the same.
+
+```
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+import numpy as np
+
+m1 = np.mean(tseriesr[1:20]) # mean of distribution (July to November)
+s1 = np.std(tseriesr[1:20]) # standard deviation of distribution
+m2 = np.mean(tseriesr[21:40]) # mean of distribution (November to March)
+s2 = np.std(tseriesr[21:40]) # standard deviation of distribution
+
+x0 = m1 + s1 * np.random.randn(1000)
+x1 = m2 + s2 * np.random.randn(1000)
+
+period1 = go.Histogram(
+    x=x0,
+    opacity=0.75
+)
+period2 = go.Histogram(
+    x=x1,
+    opacity=0.75
+)
+
+data = [period1, period2]
+layout = go.Layout(barmode='overlay')
+fig = go.Figure(data=data, layout=layout)
+
+py.iplot(fig, filename='overlaid histogram')
+```
+
+Here is the overlaid histogram:
+
+![monte-carlo](monte-carlo.png)
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 81% accuracy in doing so across the test set.
