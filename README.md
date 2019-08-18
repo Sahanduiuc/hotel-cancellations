@@ -34,35 +34,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.preprocessing import MinMaxScaler
-
-dtypes = {
-        'IsCanceled':                                    'float64',
-        'LeadTime':                                          'float64',
-        'StaysInWeekendNights':                                     'float64',
-        'StaysInWeekNights':                                     'float64',
-        'Adults':                            'float64',
-        'Children':                            'float64',
-        'Babies':                                  'float64',
-        'Meal':                                    'category',
-        'Country':                                               'category',
-        'MarketSegment':                                    'category',
-        'DistributionChannel':                                       'category',
-        'IsRepeatedGuest':                               'float64',
-        'PreviousCancellations':                                    'float64',
-        'PreviousBookingsNotCanceled':                          'float64',
-        'ReservedRoomType':                                             'category',
-        'AssignedRoomType':                                            'category',
-        'BookingChanges':                                                'float64',
-        'DepositType':                                              'category',
-        'Agent':                                              'category',
-        'Company':                                 'category',
-        'DaysInWaitingList':                                           'float64',
-        'CustomerType':                                           'category',
-        'ADR':                                          'float64',
-        'RequiredCarParkingSpaces':                                      'float64',
-        'TotalOfSpecialRequests':                                              'float64',
-        'ReservationStatus':                                                'category'
-        }
 ```
 
 As we can see, there are many variables that can potentially influence whether a customer is going to cancel or not, and not all of these variables will necessarily be relevant in determining this.
