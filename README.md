@@ -228,7 +228,7 @@ plt.show()
 
 ## Support Vector Machine (SVM) generation
 
-The above model has shown a **69%** classification accuracy in determining whether a customer will cancel. The prediction for non-cancellations was **68%** based on precision while it was **71%** for cancellations (also based on precision).
+The above model has shown a **70%** classification accuracy in determining whether a customer will cancel. The prediction for non-cancellations was **68%** based on precision while it was **72%** for cancellations (also based on precision).
 
 Therefore, an SVM was generated using the training and validation data to determine whether this model would yield higher classification accuracy.
 
@@ -265,7 +265,7 @@ This is the updated confusion matrix:
 weighted avg       0.73      0.72      0.71      5000
 ```
 
-The overall accuracy has increased to **72%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
+The overall accuracy has increased to **73%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
