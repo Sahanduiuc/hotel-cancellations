@@ -150,7 +150,7 @@ print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
 The following training and test set scores were generated:
 ```
 Training set score: 0.699
-Test set score: 0.697
+Test set score: 0.699
 ```
 Then, the coefficients for the logistic regression itself were generated:
 
@@ -165,24 +165,24 @@ Here are the updated results:
 
 ```
 Optimization terminated successfully.
-         Current function value: 0.596248
+         Current function value: 0.596755
          Iterations 7
                            Logit Regression Results                           
 ==============================================================================
-Dep. Variable:                      y   No. Observations:                20000
+Dep. Variable:             IsCanceled   No. Observations:                20000
 Model:                          Logit   Df Residuals:                    19996
 Method:                           MLE   Df Model:                            3
-Date:                Wed, 05 Jun 2019   Pseudo R-squ.:                  0.1398
-Time:                        13:39:05   Log-Likelihood:                -11925.
+Date:                Sat, 17 Aug 2019   Pseudo R-squ.:                  0.1391
+Time:                        23:58:55   Log-Likelihood:                -11935.
 converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const         -2.1536      0.050    -43.353      0.000      -2.251      -2.056
-x1             0.0056      0.000     32.378      0.000       0.005       0.006
-x2             0.0237      0.001     36.517      0.000       0.022       0.025
-x3             2.1095      0.104     20.360      0.000       1.906       2.313
+const         -2.1417      0.050    -43.216      0.000      -2.239      -2.045
+x1             0.0055      0.000     32.013      0.000       0.005       0.006
+x2             0.0236      0.001     36.465      0.000       0.022       0.025
+x3             2.1137      0.104     20.400      0.000       1.911       2.317
 ==============================================================================
 ```
 
@@ -199,13 +199,13 @@ The confusion matrix is generated:
 
 ```
 [[1898  633]
- [ 883 1586]]
+ [ 874 1595]]
               precision    recall  f1-score   support
 
-           0       0.68      0.75      0.71      2531
-           1       0.71      0.64      0.68      2469
+           0       0.68      0.75      0.72      2531
+           1       0.72      0.65      0.68      2469
 
-   micro avg       0.70      0.70      0.70      5000
+    accuracy                           0.70      5000
    macro avg       0.70      0.70      0.70      5000
 weighted avg       0.70      0.70      0.70      5000
 ```
@@ -253,72 +253,77 @@ Here is the new ROC curve generated:
 This is the updated confusion matrix:
 
 ```
-[[2078  453]
- [ 961 1508]]
+[[2085  446]
+ [ 963 1506]]
               precision    recall  f1-score   support
 
            0       0.68      0.82      0.75      2531
            1       0.77      0.61      0.68      2469
 
-   micro avg       0.72      0.72      0.72      5000
+    accuracy                           0.72      5000
    macro avg       0.73      0.72      0.71      5000
 weighted avg       0.73      0.72      0.71      5000
 ```
 
-The overall accuracy has increased to **71%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
+The overall accuracy has increased to **72%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
 Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the SVM generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
-The second dataset is loaded using pandas, and the relevant variables are factorized:
+The second dataset is loaded using pandas:
 
 ```
 h2data = pd.read_csv('H2.csv', dtype=dtypes)
 a=h2data.head()
 b=h2data
 b
-
-seconddata=b.apply(lambda col: pd.factorize(col, sort=True)[0])
-seconddata
 ```
-
-![df2](df2.png)
-
 
 The new variables are sorted into a numpy column stack, and an SVM is run:
 
 ```
-leadtime = seconddata['LeadTime'] #1
-staysweekendnights = seconddata['StaysInWeekendNights'] #2
-staysweeknights = seconddata['StaysInWeekNights'] #3
-adults = seconddata['Adults'] #4
-children = seconddata['Children'] #5
-babies = seconddata['Babies'] #6
-meal = seconddata['Meal'] #7
-country = seconddata['Country'] #8
-marketsegment = seconddata['MarketSegment'] #9
-distributionchannel = seconddata['DistributionChannel'] #10
-isrepeatedguest = seconddata['IsRepeatedGuest'] #11
-previouscancellations = seconddata['PreviousCancellations'] #12
-previousbookingsnotcanceled = seconddata['PreviousBookingsNotCanceled'] #13
-reservedroomtype = seconddata['ReservedRoomType'] #14
-assignedroomtype = seconddata['AssignedRoomType'] #15
-bookingchanges = seconddata['BookingChanges'] #16
-deptype = seconddata['DepositType'] #17
-agent = seconddata['Agent'] #18
-company = seconddata['Company'] #19
-dayswaitinglist = seconddata['DaysInWaitingList'] #20
-custype = seconddata['CustomerType'] #21
-adr = seconddata['ADR'] #22
-rcps = seconddata['RequiredCarParkingSpaces'] #23
-totalsqr = seconddata['TotalOfSpecialRequests'] #24
-reserv = seconddata['ReservationStatus'] #25
+# Numerical variables
+t_leadtime = h2data['LeadTime'] #1
+t_staysweekendnights = h2data['StaysInWeekendNights'] #2
+t_staysweeknights = h2data['StaysInWeekNights'] #3
+t_adults = h2data['Adults'] #4
+t_children = h2data['Children'] #5
+t_babies = h2data['Babies'] #6
+t_isrepeatedguest = h2data['IsRepeatedGuest'] #11
+t_previouscancellations = h2data['PreviousCancellations'] #12
+t_previousbookingsnotcanceled = h2data['PreviousBookingsNotCanceled'] #13
+t_bookingchanges = h2data['BookingChanges'] #16
+t_agent = h2data['Agent'] #18
+t_company = h2data['Company'] #19
+t_dayswaitinglist = h2data['DaysInWaitingList'] #20
+t_adr = h2data['ADR'] #22
+t_rcps = h2data['RequiredCarParkingSpaces'] #23
+t_totalsqr = h2data['TotalOfSpecialRequests'] #24
 
+# Categorical variables
+t_mealcat=h2data.Meal.astype("category").cat.codes
+t_mealcat=pd.Series(t_mealcat)
+t_countrycat=h2data.Country.astype("category").cat.codes
+t_countrycat=pd.Series(t_countrycat)
+t_marketsegmentcat=h2data.MarketSegment.astype("category").cat.codes
+t_marketsegmentcat=pd.Series(t_marketsegmentcat)
+t_distributionchannelcat=h2data.DistributionChannel.astype("category").cat.codes
+t_distributionchannelcat=pd.Series(t_distributionchannelcat)
+t_reservedroomtypecat=h2data.ReservedRoomType.astype("category").cat.codes
+t_reservedroomtypecat=pd.Series(t_reservedroomtypecat)
+t_assignedroomtypecat=h2data.AssignedRoomType.astype("category").cat.codes
+t_assignedroomtypecat=pd.Series(t_assignedroomtypecat)
+t_deposittypecat=h2data.DepositType.astype("category").cat.codes
+t_deposittypecat=pd.Series(t_deposittypecat)
+t_customertypecat=h2data.CustomerType.astype("category").cat.codes
+t_customertypecat=pd.Series(t_customertypecat)
+t_reservationstatuscat=h2data.ReservationStatus.astype("category").cat.codes
+t_reservationstatuscat=pd.Series(t_reservationstatuscat)
 
-a = np.column_stack((leadtime,country,deptype))
+a = np.column_stack((t_leadtime,t_countrycat,t_deposittypecat))
 a = sm.add_constant(a, prepend=True)
-IsCanceled = seconddata['IsCanceled']
+IsCanceled = h2data['IsCanceled']
 b = IsCanceled
 b=b.values
 
@@ -343,16 +348,16 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[5652 1352]
- [1993 3003]]
+[[5654 1350]
+ [2038 2958]]
               precision    recall  f1-score   support
 
            0       0.74      0.81      0.77      7004
-           1       0.69      0.60      0.64      4996
+           1       0.69      0.59      0.64      4996
 
-   micro avg       0.72      0.72      0.72     12000
-   macro avg       0.71      0.70      0.71     12000
-weighted avg       0.72      0.72      0.72     12000
+    accuracy                           0.72     12000
+   macro avg       0.71      0.70      0.70     12000
+weighted avg       0.71      0.72      0.71     12000
 ```
 
 The ROC curve is generated:
