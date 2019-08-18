@@ -34,35 +34,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.preprocessing import MinMaxScaler
-
-dtypes = {
-        'IsCanceled':                                    'float64',
-        'LeadTime':                                          'float64',
-        'StaysInWeekendNights':                                     'float64',
-        'StaysInWeekNights':                                     'float64',
-        'Adults':                            'float64',
-        'Children':                            'float64',
-        'Babies':                                  'float64',
-        'Meal':                                    'category',
-        'Country':                                               'category',
-        'MarketSegment':                                    'category',
-        'DistributionChannel':                                       'category',
-        'IsRepeatedGuest':                               'float64',
-        'PreviousCancellations':                                    'float64',
-        'PreviousBookingsNotCanceled':                          'float64',
-        'ReservedRoomType':                                             'category',
-        'AssignedRoomType':                                            'category',
-        'BookingChanges':                                                'float64',
-        'DepositType':                                              'category',
-        'Agent':                                              'category',
-        'Company':                                 'category',
-        'DaysInWaitingList':                                           'float64',
-        'CustomerType':                                           'category',
-        'ADR':                                          'float64',
-        'RequiredCarParkingSpaces':                                      'float64',
-        'TotalOfSpecialRequests':                                              'float64',
-        'ReservationStatus':                                                'category'
-        }
 ```
 
 As we can see, there are many variables that can potentially influence whether a customer is going to cancel or not, and not all of these variables will necessarily be relevant in determining this.
@@ -73,48 +44,60 @@ The data is imported, and then the data is factorized so as to express the categ
 train_df = pd.read_csv('H1.csv', dtype=dtypes)
 a=train_df.head()
 b=train_df
+b.sort_values(['ArrivalDateYear','ArrivalDateWeekNumber'], ascending=True)
 b
-
-data=b.apply(lambda col: pd.factorize(col, sort=True)[0])
-data
 ```
 
-![factorized](factorized.png)
+![table](table.png)
 
 The variables are then stacked together under the numpy format:
 
 ```
-IsCanceled = data['IsCanceled']
+# Dependent variable
+IsCanceled = train_df['IsCanceled']
 y = IsCanceled
-leadtime = data['LeadTime'] #1
-staysweekendnights = data['StaysInWeekendNights'] #2
-staysweeknights = data['StaysInWeekNights'] #3
-adults = data['Adults'] #4
-children = data['Children'] #5
-babies = data['Babies'] #6
-meal = data['Meal'] #7
-country = data['Country'] #8
-marketsegment = data['MarketSegment'] #9
-distributionchannel = data['DistributionChannel'] #10
-isrepeatedguest = data['IsRepeatedGuest'] #11
-previouscancellations = data['PreviousCancellations'] #12
-previousbookingsnotcanceled = data['PreviousBookingsNotCanceled'] #13
-reservedroomtype = data['ReservedRoomType'] #14
-assignedroomtype = data['AssignedRoomType'] #15
-bookingchanges = data['BookingChanges'] #16
-deptype = data['DepositType'] #17
-agent = data['Agent'] #18
-company = data['Company'] #19
-dayswaitinglist = data['DaysInWaitingList'] #20
-custype = data['CustomerType'] #21
-adr = data['ADR'] #22
-rcps = data['RequiredCarParkingSpaces'] #23
-totalsqr = data['TotalOfSpecialRequests'] #24
-reserv = data['ReservationStatus'] #25
 
-x = np.column_stack((leadtime,staysweekendnights,staysweeknights,adults,children,babies,meal,country,marketsegment,distributionchannel,isrepeatedguest,previouscancellations,previousbookingsnotcanceled,reservedroomtype,assignedroomtype,bookingchanges,deptype,agent,company,dayswaitinglist,custype,adr,rcps,totalsqr,reserv))
+# Numerical variables
+leadtime = train_df['LeadTime'] #1
+staysweekendnights = train_df['StaysInWeekendNights'] #2
+staysweeknights = train_df['StaysInWeekNights'] #3
+adults = train_df['Adults'] #4
+children = train_df['Children'] #5
+babies = train_df['Babies'] #6
+isrepeatedguest = train_df['IsRepeatedGuest'] #11
+previouscancellations = train_df['PreviousCancellations'] #12
+previousbookingsnotcanceled = train_df['PreviousBookingsNotCanceled'] #13
+bookingchanges = train_df['BookingChanges'] #16
+agent = train_df['Agent'] #18
+company = train_df['Company'] #19
+dayswaitinglist = train_df['DaysInWaitingList'] #20
+adr = train_df['ADR'] #22
+rcps = train_df['RequiredCarParkingSpaces'] #23
+totalsqr = train_df['TotalOfSpecialRequests'] #24
+
+# Categorical variables
+mealcat=train_df.Meal.astype("category").cat.codes
+mealcat=pd.Series(mealcat)
+countrycat=train_df.Country.astype("category").cat.codes
+countrycat=pd.Series(countrycat)
+marketsegmentcat=train_df.MarketSegment.astype("category").cat.codes
+marketsegmentcat=pd.Series(marketsegmentcat)
+distributionchannelcat=train_df.DistributionChannel.astype("category").cat.codes
+distributionchannelcat=pd.Series(distributionchannelcat)
+reservedroomtypecat=train_df.ReservedRoomType.astype("category").cat.codes
+reservedroomtypecat=pd.Series(reservedroomtypecat)
+assignedroomtypecat=train_df.AssignedRoomType.astype("category").cat.codes
+assignedroomtypecat=pd.Series(assignedroomtypecat)
+deposittypecat=train_df.DepositType.astype("category").cat.codes
+deposittypecat=pd.Series(deposittypecat)
+customertypecat=train_df.CustomerType.astype("category").cat.codes
+customertypecat=pd.Series(customertypecat)
+reservationstatuscat=train_df.ReservationStatus.astype("category").cat.codes
+reservationstatuscat=pd.Series(reservationstatuscat)
+
+# Numpy column stack
+x = np.column_stack((leadtime,staysweekendnights,staysweeknights,adults,children,babies,mealcat,countrycat,marketsegmentcat,distributionchannelcat,isrepeatedguest,previouscancellations,previousbookingsnotcanceled,reservedroomtypecat,assignedroomtypecat,bookingchanges,deposittypecat,dayswaitinglist,customertypecat,adr,rcps,totalsqr,reservationstatuscat))
 x = sm.add_constant(x, prepend=True)
-y=y.values
 ```
 
 ## Extra Trees Classifier
@@ -133,15 +116,13 @@ print(model.feature_importances_)
 Here are the generated readings:
 
 ```
-[0.00000000e+00 2.36504430e-02 2.65915082e-03 3.40313029e-03
- 3.50712001e-03 1.67339965e-03 2.97023878e-04 1.58653873e-03
- 3.91496135e-02 1.85636966e-02 2.22467425e-03 5.43228409e-03
- 5.89261930e-03 9.18391152e-04 2.70472970e-03 6.05852112e-03
- 5.39940598e-03 2.44619382e-02 8.44330541e-03 1.28580667e-03
- 5.00680306e-04 9.39879434e-03 5.81957644e-03 6.67617266e-02
- 4.81097875e-03 7.55396451e-01]
+[0.         0.04070268 0.0052648  0.00701335 0.00396219 0.00806383
+ 0.00075091 0.00614394 0.05941394 0.03322725 0.01097485 0.01110851
+ 0.00733542 0.00147088 0.0076557  0.01338097 0.00640656 0.03391769
+ 0.0010779  0.018724   0.01788529 0.06105368 0.0082012  0.63626446]
 ```
-Here is a breakdown of the feature importance in Excel format:
+
+Here is a breakdown of the feature ranking by order with the top features:
 
 ![feature-score](feature-score.png)
 
@@ -169,7 +150,7 @@ print("Test set score: {:.3f}".format(logreg.score(x1_test,y1_test)))
 The following training and test set scores were generated:
 ```
 Training set score: 0.699
-Test set score: 0.697
+Test set score: 0.699
 ```
 Then, the coefficients for the logistic regression itself were generated:
 
@@ -184,24 +165,24 @@ Here are the updated results:
 
 ```
 Optimization terminated successfully.
-         Current function value: 0.596248
+         Current function value: 0.596755
          Iterations 7
                            Logit Regression Results                           
 ==============================================================================
-Dep. Variable:                      y   No. Observations:                20000
+Dep. Variable:             IsCanceled   No. Observations:                20000
 Model:                          Logit   Df Residuals:                    19996
 Method:                           MLE   Df Model:                            3
-Date:                Wed, 05 Jun 2019   Pseudo R-squ.:                  0.1398
-Time:                        13:39:05   Log-Likelihood:                -11925.
+Date:                Sat, 17 Aug 2019   Pseudo R-squ.:                  0.1391
+Time:                        23:58:55   Log-Likelihood:                -11935.
 converged:                       True   LL-Null:                       -13863.
                                         LLR p-value:                     0.000
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const         -2.1536      0.050    -43.353      0.000      -2.251      -2.056
-x1             0.0056      0.000     32.378      0.000       0.005       0.006
-x2             0.0237      0.001     36.517      0.000       0.022       0.025
-x3             2.1095      0.104     20.360      0.000       1.906       2.313
+const         -2.1417      0.050    -43.216      0.000      -2.239      -2.045
+x1             0.0055      0.000     32.013      0.000       0.005       0.006
+x2             0.0236      0.001     36.465      0.000       0.022       0.025
+x3             2.1137      0.104     20.400      0.000       1.911       2.317
 ==============================================================================
 ```
 
@@ -218,13 +199,13 @@ The confusion matrix is generated:
 
 ```
 [[1898  633]
- [ 883 1586]]
+ [ 874 1595]]
               precision    recall  f1-score   support
 
-           0       0.68      0.75      0.71      2531
-           1       0.71      0.64      0.68      2469
+           0       0.68      0.75      0.72      2531
+           1       0.72      0.65      0.68      2469
 
-   micro avg       0.70      0.70      0.70      5000
+    accuracy                           0.70      5000
    macro avg       0.70      0.70      0.70      5000
 weighted avg       0.70      0.70      0.70      5000
 ```
@@ -272,72 +253,77 @@ Here is the new ROC curve generated:
 This is the updated confusion matrix:
 
 ```
-[[2078  453]
- [ 961 1508]]
+[[2085  446]
+ [ 963 1506]]
               precision    recall  f1-score   support
 
            0       0.68      0.82      0.75      2531
            1       0.77      0.61      0.68      2469
 
-   micro avg       0.72      0.72      0.72      5000
+    accuracy                           0.72      5000
    macro avg       0.73      0.72      0.71      5000
 weighted avg       0.73      0.72      0.71      5000
 ```
 
-The overall accuracy has increased to **71%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
+The overall accuracy has increased to **72%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
 Now that the SVM has shown improved accuracy against the validation dataset, another dataset H2.csv (also available from Science direct) is used for comparison purposes, i.e. the SVM generated using the last dataset is now used to predict classifications across this dataset (for a different hotel located in Lisbon, Portugal).
 
-The second dataset is loaded using pandas, and the relevant variables are factorized:
+The second dataset is loaded using pandas:
 
 ```
 h2data = pd.read_csv('H2.csv', dtype=dtypes)
 a=h2data.head()
 b=h2data
 b
-
-seconddata=b.apply(lambda col: pd.factorize(col, sort=True)[0])
-seconddata
 ```
-
-![df2](df2.png)
-
 
 The new variables are sorted into a numpy column stack, and an SVM is run:
 
 ```
-leadtime = seconddata['LeadTime'] #1
-staysweekendnights = seconddata['StaysInWeekendNights'] #2
-staysweeknights = seconddata['StaysInWeekNights'] #3
-adults = seconddata['Adults'] #4
-children = seconddata['Children'] #5
-babies = seconddata['Babies'] #6
-meal = seconddata['Meal'] #7
-country = seconddata['Country'] #8
-marketsegment = seconddata['MarketSegment'] #9
-distributionchannel = seconddata['DistributionChannel'] #10
-isrepeatedguest = seconddata['IsRepeatedGuest'] #11
-previouscancellations = seconddata['PreviousCancellations'] #12
-previousbookingsnotcanceled = seconddata['PreviousBookingsNotCanceled'] #13
-reservedroomtype = seconddata['ReservedRoomType'] #14
-assignedroomtype = seconddata['AssignedRoomType'] #15
-bookingchanges = seconddata['BookingChanges'] #16
-deptype = seconddata['DepositType'] #17
-agent = seconddata['Agent'] #18
-company = seconddata['Company'] #19
-dayswaitinglist = seconddata['DaysInWaitingList'] #20
-custype = seconddata['CustomerType'] #21
-adr = seconddata['ADR'] #22
-rcps = seconddata['RequiredCarParkingSpaces'] #23
-totalsqr = seconddata['TotalOfSpecialRequests'] #24
-reserv = seconddata['ReservationStatus'] #25
+# Numerical variables
+t_leadtime = h2data['LeadTime'] #1
+t_staysweekendnights = h2data['StaysInWeekendNights'] #2
+t_staysweeknights = h2data['StaysInWeekNights'] #3
+t_adults = h2data['Adults'] #4
+t_children = h2data['Children'] #5
+t_babies = h2data['Babies'] #6
+t_isrepeatedguest = h2data['IsRepeatedGuest'] #11
+t_previouscancellations = h2data['PreviousCancellations'] #12
+t_previousbookingsnotcanceled = h2data['PreviousBookingsNotCanceled'] #13
+t_bookingchanges = h2data['BookingChanges'] #16
+t_agent = h2data['Agent'] #18
+t_company = h2data['Company'] #19
+t_dayswaitinglist = h2data['DaysInWaitingList'] #20
+t_adr = h2data['ADR'] #22
+t_rcps = h2data['RequiredCarParkingSpaces'] #23
+t_totalsqr = h2data['TotalOfSpecialRequests'] #24
 
+# Categorical variables
+t_mealcat=h2data.Meal.astype("category").cat.codes
+t_mealcat=pd.Series(t_mealcat)
+t_countrycat=h2data.Country.astype("category").cat.codes
+t_countrycat=pd.Series(t_countrycat)
+t_marketsegmentcat=h2data.MarketSegment.astype("category").cat.codes
+t_marketsegmentcat=pd.Series(t_marketsegmentcat)
+t_distributionchannelcat=h2data.DistributionChannel.astype("category").cat.codes
+t_distributionchannelcat=pd.Series(t_distributionchannelcat)
+t_reservedroomtypecat=h2data.ReservedRoomType.astype("category").cat.codes
+t_reservedroomtypecat=pd.Series(t_reservedroomtypecat)
+t_assignedroomtypecat=h2data.AssignedRoomType.astype("category").cat.codes
+t_assignedroomtypecat=pd.Series(t_assignedroomtypecat)
+t_deposittypecat=h2data.DepositType.astype("category").cat.codes
+t_deposittypecat=pd.Series(t_deposittypecat)
+t_customertypecat=h2data.CustomerType.astype("category").cat.codes
+t_customertypecat=pd.Series(t_customertypecat)
+t_reservationstatuscat=h2data.ReservationStatus.astype("category").cat.codes
+t_reservationstatuscat=pd.Series(t_reservationstatuscat)
 
-a = np.column_stack((leadtime,country,deptype))
+a = np.column_stack((t_leadtime,t_countrycat,t_deposittypecat))
 a = sm.add_constant(a, prepend=True)
-IsCanceled = seconddata['IsCanceled']
+IsCanceled = h2data['IsCanceled']
 b = IsCanceled
 b=b.values
 
@@ -362,16 +348,16 @@ print(classification_report(b,prh2))
 **Classification Output**
 
 ```
-[[5652 1352]
- [1993 3003]]
+[[5654 1350]
+ [2038 2958]]
               precision    recall  f1-score   support
 
            0       0.74      0.81      0.77      7004
-           1       0.69      0.60      0.64      4996
+           1       0.69      0.59      0.64      4996
 
-   micro avg       0.72      0.72      0.72     12000
-   macro avg       0.71      0.70      0.71     12000
-weighted avg       0.72      0.72      0.72     12000
+    accuracy                           0.72     12000
+   macro avg       0.71      0.70      0.70     12000
+weighted avg       0.71      0.72      0.71     12000
 ```
 
 The ROC curve is generated:
@@ -386,7 +372,7 @@ metrics.auc(falsepos, truepos)
 The computed AUC (area under the curve) is **0.74**.
 
 ```
-0.7434473849782282
+0.7437825188763232
 ```
 
 ## ARIMA Modelling of Hotel Cancellations
