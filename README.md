@@ -372,7 +372,7 @@ metrics.auc(falsepos, truepos)
 The computed AUC (area under the curve) is **0.74**.
 
 ```
-0.7434473849782282
+0.7437825188763232
 ```
 
 ## ARIMA Modelling of Hotel Cancellations
