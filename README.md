@@ -44,10 +44,8 @@ The data is imported, and then the data is factorized so as to express the categ
 train_df = pd.read_csv('H1.csv', dtype=dtypes)
 a=train_df.head()
 b=train_df
+b.sort_values(['ArrivalDateYear','ArrivalDateWeekNumber'], ascending=True)
 b
-
-data=b.apply(lambda col: pd.factorize(col, sort=True)[0])
-data
 ```
 
 ![factorized](factorized.png)
