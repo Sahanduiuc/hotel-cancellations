@@ -53,37 +53,51 @@ b
 The variables are then stacked together under the numpy format:
 
 ```
-IsCanceled = data['IsCanceled']
+# Dependent variable
+IsCanceled = train_df['IsCanceled']
 y = IsCanceled
-leadtime = data['LeadTime'] #1
-staysweekendnights = data['StaysInWeekendNights'] #2
-staysweeknights = data['StaysInWeekNights'] #3
-adults = data['Adults'] #4
-children = data['Children'] #5
-babies = data['Babies'] #6
-meal = data['Meal'] #7
-country = data['Country'] #8
-marketsegment = data['MarketSegment'] #9
-distributionchannel = data['DistributionChannel'] #10
-isrepeatedguest = data['IsRepeatedGuest'] #11
-previouscancellations = data['PreviousCancellations'] #12
-previousbookingsnotcanceled = data['PreviousBookingsNotCanceled'] #13
-reservedroomtype = data['ReservedRoomType'] #14
-assignedroomtype = data['AssignedRoomType'] #15
-bookingchanges = data['BookingChanges'] #16
-deptype = data['DepositType'] #17
-agent = data['Agent'] #18
-company = data['Company'] #19
-dayswaitinglist = data['DaysInWaitingList'] #20
-custype = data['CustomerType'] #21
-adr = data['ADR'] #22
-rcps = data['RequiredCarParkingSpaces'] #23
-totalsqr = data['TotalOfSpecialRequests'] #24
-reserv = data['ReservationStatus'] #25
 
-x = np.column_stack((leadtime,staysweekendnights,staysweeknights,adults,children,babies,meal,country,marketsegment,distributionchannel,isrepeatedguest,previouscancellations,previousbookingsnotcanceled,reservedroomtype,assignedroomtype,bookingchanges,deptype,agent,company,dayswaitinglist,custype,adr,rcps,totalsqr,reserv))
+# Numerical variables
+leadtime = train_df['LeadTime'] #1
+staysweekendnights = train_df['StaysInWeekendNights'] #2
+staysweeknights = train_df['StaysInWeekNights'] #3
+adults = train_df['Adults'] #4
+children = train_df['Children'] #5
+babies = train_df['Babies'] #6
+isrepeatedguest = train_df['IsRepeatedGuest'] #11
+previouscancellations = train_df['PreviousCancellations'] #12
+previousbookingsnotcanceled = train_df['PreviousBookingsNotCanceled'] #13
+bookingchanges = train_df['BookingChanges'] #16
+agent = train_df['Agent'] #18
+company = train_df['Company'] #19
+dayswaitinglist = train_df['DaysInWaitingList'] #20
+adr = train_df['ADR'] #22
+rcps = train_df['RequiredCarParkingSpaces'] #23
+totalsqr = train_df['TotalOfSpecialRequests'] #24
+
+# Categorical variables
+mealcat=train_df.Meal.astype("category").cat.codes
+mealcat=pd.Series(mealcat)
+countrycat=train_df.Country.astype("category").cat.codes
+countrycat=pd.Series(countrycat)
+marketsegmentcat=train_df.MarketSegment.astype("category").cat.codes
+marketsegmentcat=pd.Series(marketsegmentcat)
+distributionchannelcat=train_df.DistributionChannel.astype("category").cat.codes
+distributionchannelcat=pd.Series(distributionchannelcat)
+reservedroomtypecat=train_df.ReservedRoomType.astype("category").cat.codes
+reservedroomtypecat=pd.Series(reservedroomtypecat)
+assignedroomtypecat=train_df.AssignedRoomType.astype("category").cat.codes
+assignedroomtypecat=pd.Series(assignedroomtypecat)
+deposittypecat=train_df.DepositType.astype("category").cat.codes
+deposittypecat=pd.Series(deposittypecat)
+customertypecat=train_df.CustomerType.astype("category").cat.codes
+customertypecat=pd.Series(customertypecat)
+reservationstatuscat=train_df.ReservationStatus.astype("category").cat.codes
+reservationstatuscat=pd.Series(reservationstatuscat)
+
+# Numpy column stack
+x = np.column_stack((leadtime,staysweekendnights,staysweeknights,adults,children,babies,mealcat,countrycat,marketsegmentcat,distributionchannelcat,isrepeatedguest,previouscancellations,previousbookingsnotcanceled,reservedroomtypecat,assignedroomtypecat,bookingchanges,deposittypecat,dayswaitinglist,customertypecat,adr,rcps,totalsqr,reservationstatuscat))
 x = sm.add_constant(x, prepend=True)
-y=y.values
 ```
 
 ## Extra Trees Classifier
