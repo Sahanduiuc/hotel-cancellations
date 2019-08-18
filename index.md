@@ -265,7 +265,7 @@ This is the updated confusion matrix:
 weighted avg       0.73      0.72      0.71      5000
 ```
 
-The overall accuracy has increased to **72%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
+The overall accuracy has increased to **73%**, but note that the predictive accuracy for cancellations specifically has improved quite significantly to **77%**, while it remains at **68%** for non-cancellations.
 
 ## Testing against unseen data
 
