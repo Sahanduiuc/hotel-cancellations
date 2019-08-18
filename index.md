@@ -38,7 +38,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 As we can see, there are many variables that can potentially influence whether a customer is going to cancel or not, and not all of these variables will necessarily be relevant in determining this.
 
-The data is imported, and then the data is factorized so as to express the categories in numerical format:
+The data is imported:
 
 ```
 train_df = pd.read_csv('H1.csv', dtype=dtypes)
