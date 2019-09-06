@@ -4,7 +4,7 @@
 [E-mail me](mailto:contact@michaeljgrogan.com) |
 [LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
 
-# Predicting Hotel Cancellations with Support Vector Machines and ARIMA: Part 1
+# Part 1: Predicting Hotel Cancellations with Support Vector Machines and ARIMA
 
 *This is Part 1 of a three part study on predicting hotel cancellations with machine learning.*
 
