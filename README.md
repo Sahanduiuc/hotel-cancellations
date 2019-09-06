@@ -10,7 +10,7 @@
 
 *[- Part 2: Predicting Hotel Cancellations with a Keras Neural Network](www.michael-grogan.com/hotel-cancellations-neuralnetwork)*
 
-*[- Part 3: Predicting Weekly Hotel Cancellations with an LSTM Network: Part 3](www.michael-grogan.com/hotel-cancellations-lstm)*
+*[- Part 3: Predicting Weekly Hotel Cancellations with an LSTM Network](www.michael-grogan.com/hotel-cancellations-lstm)*
 
 Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
