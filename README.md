@@ -460,7 +460,7 @@ Based on the lowest AIC, the **SARIMAX(1, 1, 0)x(0, 1, 0, 52)** configuration is
 
 Here is the output of the model:
 
-![arima-model](arima-model.png)
+![arima-model](arima-model.PNG)
 
 With **90%** of the series used as the training data to build the ARIMA model, the remaining **10%** is now used to test the predictions of the model. Here are the predictions vs the actual data:
 
