@@ -389,7 +389,7 @@ Having investigated the main drivers of hotel cancellations, it is useful to det
 
 To do this, cancellations are analysed on a weekly basis (i.e. the number of cancellations for a given week are summed up).
 
-Firstly, data manipulation procedures were carried out to sum up the number of cancellations per week and order them correctly.
+Firstly, data manipulation procedures were carried out using pandas to sum up the number of cancellations per week and order them correctly.
 
 Here is a snippet of the output:
 
