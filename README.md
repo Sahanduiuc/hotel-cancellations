@@ -592,9 +592,9 @@ The following is the ARIMA configuration obtained using pyramid-arima:
 
 ![predicted-vs-actual-2](predicted-vs-actual-2.png)
 
-- RMSE on test data: 274
-- Mean Directional Accuracy: 0.8666
-- Mean Forecast Error: 156.329
+- **RMSE on test data:** 274
+- **Mean Directional Accuracy:** 0.8666
+- **Mean Forecast Error:** 156.329
 
 # Conclusion
 
