@@ -569,6 +569,12 @@ dtype: float64
 -12.726958780163237
 ```
 
+The RMSE has improved slightly (dropped to 57), while the MDA has dropped to 86% and the mean forecast error stands at -12, meaning that the model has a tendency to slightly underestimate the cancellations and therefore the forecast bias is negative.
+
+Here is a plot of the predicted vs actual cancellations:
+
+![predicted-vs-actual](predicted-vs-actual.png)
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 81% accuracy in doing so across the test set.
