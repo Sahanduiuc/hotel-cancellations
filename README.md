@@ -542,6 +542,31 @@ RMSE: 57.955865
 >>> mda(test, predictionsnew)
 
 0.8666666666666667
+
+>>> forecast_error_new = (predictionsnew-test)
+>>> forecast_error_new
+
+0     -39.903941
+1    -128.986739
+2     -47.325146
+3     -76.683169
+4     -14.237713
+5      77.591519
+6     -34.782635
+7      59.277972
+8       4.404317
+9     -40.860982
+10    -38.522419
+11     49.074094
+12    -44.497360
+13     11.040560
+14     73.507259
+dtype: float64
+
+>>> mean_forecast_error_new = np.mean(forecast_error_new)
+>>> mean_forecast_error_new
+
+-12.726958780163237
 ```
 
 # Conclusion
