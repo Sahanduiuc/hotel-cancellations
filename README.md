@@ -485,7 +485,7 @@ def mda(actual: np.ndarray, predicted: np.ndarray):
 An MDA of above 80% is yielded:
 
 ```
-mda(test, predictions)
+mda(val, predictions)
 0.8947368421052632
 ```
 
