@@ -576,6 +576,22 @@ Here is a plot of the predicted vs actual cancellations:
 
 ![predicted-vs-actual](predicted-vs-actual.png)
 
+## ARIMA Modelling on H2 Data
+
+The same procedures were applied - this time using the second dataset.
+
+The following is the ARIMA configuration obtained using pyramid-arima:
+
+![arima-model-2](arima-model-2.png)
+
+**Predicted vs. Validation**
+
+![predicted-vs-val-2](predicted-vs-val-2.png)
+
+**Predicted vs. Actual**
+
+![predicted-vs-actual-2](predicted-vs-actual-2.png)
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 86% accuracy in doing so across the test set with an RMSE of 57.
