@@ -485,7 +485,8 @@ def mda(actual: np.ndarray, predicted: np.ndarray):
 An MDA of above 80% is yielded:
 
 ```
-mda(val, predictions)
+>>> mda(val, predictions)
+
 0.8947368421052632
 ```
 
@@ -512,7 +513,7 @@ Even though the ARIMA model has been trained and the accuracy validated across t
 In this regard, the ARIMA model is used to generate predictions for n=15 using the test.index to specify the unseen data.
 
 ```
-test = np.array([[130,202,117,152,131,161,131,139,150,157,173,140,182,143,100]])
+>>> test = np.array([[130,202,117,152,131,161,131,139,150,157,173,140,182,143,100]])
 ```
 
 Firstly, the array is reshaped accordingly:
