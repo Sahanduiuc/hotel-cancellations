@@ -12,6 +12,8 @@
 
 *[- Part 3: Predicting Weekly Hotel Cancellations with an LSTM Network](https://www.michael-grogan.com/hotel-cancellations-lstm)*
 
+# Logistic Regression and SVM
+
 Hotel cancellations can cause issues for many businesses in the industry. Not only is there the lost revenue as a result of the customer cancelling, but this can also cause difficulty in coordinating bookings and adjusting revenue management practices.
 
 Data analytics can help to solve this issue, in terms of identifying the customers who are most likely to cancel – allowing a hotel chain to adjust its marketing strategy accordingly.
@@ -381,11 +383,11 @@ The computed AUC (area under the curve) is **0.74**.
 0.7437825188763232
 ```
 
-## ARIMA Modelling of Hotel Cancellations
+# ARIMA Modelling of Weekly Hotel Cancellations
 
-Having investigated the main drivers of hotel cancellations, it would also be useful to determine whether hotel cancellations can also be predicted in advance. This will be done for the Algarve Hotel (H1.csv).
+Having investigated the main drivers of hotel cancellations, it is useful to determine whether hotel cancellations can also be predicted in advance. This will be done using the Algarve Hotel dataset in the first instance (H1full.csv). Since we are now seeking to predict the time series trend, all observations are now included in this dataset (cancellations and non-cancellations, irrespective of whether the dataset as a whole is uneven).
 
-To do this, cancellations are analysed on a weekly basis (i.e. the number of cancellations summed up per week).
+To do this, cancellations are analysed on a weekly basis (i.e. the number of cancellations for a given week are summed up).
 
 Firstly, data manipulation procedures were carried out to sum up the number of cancellations per week and order them correctly.
 
@@ -421,12 +423,12 @@ for key, value in result[4].items():
 When a Dickey-Fuller test is run, a p-value of less than 0.05 is generated, indicating that the null hypothesis of non-stationarity is rejected (i.e. the data is stationary).
 
 ```
-ADF Statistic: -2.998923
-p-value: 0.034995
+ADF Statistic: -2.677149
+p-value: 0.078077
 Critical Values:
-	1%: -3.498
-	5%: -2.891
-	10%: -2.582
+	1%: -3.519
+	5%: -2.900
+	10%: -2.587
 ```
 
 An ARIMA model is then run using auto_arima from the **pyramid** library. This is used to select the optimal (p,d,q) coordinates for the ARIMA model.
@@ -439,27 +441,22 @@ Arima_model=auto_arima(train, start_p=0, start_q=0, max_p=10, max_q=10, start_P=
 The following output is generated:
 
 ```
-Fit ARIMA: order=(0, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=574.094, BIC=577.918, Fit time=0.232 seconds
+Fit ARIMA: order=(0, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=305.146, BIC=307.662, Fit time=0.139 seconds
 Fit ARIMA: order=(1, 1, 0) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
 Fit ARIMA: order=(0, 1, 1) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
 Fit ARIMA: order=(0, 1, 0) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
 Fit ARIMA: order=(0, 1, 0) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
 Fit ARIMA: order=(0, 1, 0) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Fit ARIMA: order=(1, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=559.620, BIC=565.356, Fit time=1.638 seconds
-Fit ARIMA: order=(1, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=543.988, BIC=551.637, Fit time=4.383 seconds
-Fit ARIMA: order=(2, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=547.819, BIC=559.291, Fit time=8.437 seconds
-Fit ARIMA: order=(1, 1, 1) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Fit ARIMA: order=(1, 1, 1) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Fit ARIMA: order=(1, 1, 1) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Fit ARIMA: order=(0, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=542.114, BIC=547.850, Fit time=2.471 seconds
-Fit ARIMA: order=(0, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=543.993, BIC=551.641, Fit time=3.739 seconds
-Fit ARIMA: order=(1, 1, 2) seasonal_order=(0, 1, 0, 52); AIC=546.114, BIC=555.674, Fit time=2.240 seconds
-Fit ARIMA: order=(0, 1, 1) seasonal_order=(1, 1, 0, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Fit ARIMA: order=(0, 1, 1) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
-Total fit time: 23.187 seconds
+Fit ARIMA: order=(1, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=292.219, BIC=295.993, Fit time=0.590 seconds
+Fit ARIMA: order=(1, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=293.486, BIC=298.518, Fit time=0.587 seconds
+Fit ARIMA: order=(2, 1, 1) seasonal_order=(0, 1, 0, 52); AIC=294.780, BIC=301.070, Fit time=1.319 seconds
+Fit ARIMA: order=(1, 1, 0) seasonal_order=(0, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(1, 1, 0) seasonal_order=(1, 1, 1, 52); AIC=nan, BIC=nan, Fit time=nan seconds
+Fit ARIMA: order=(2, 1, 0) seasonal_order=(0, 1, 0, 52); AIC=293.144, BIC=298.176, Fit time=0.896 seconds
+Total fit time: 3.549 seconds
 ```
 
-Based on the lowest AIC, the **SARIMAX(0, 1, 1)x(0, 1, 0, 52)** configuration is identified as the most optimal for modelling the time series.
+Based on the lowest AIC, the **SARIMAX(1, 1, 0)x(0, 1, 0, 52)** configuration is identified as the most optimal for modelling the time series.
 
 Here is the output of the model:
 
@@ -485,10 +482,24 @@ An MDA of above 80% is yielded:
 
 ```
 mda(test, predictions)
-0.8181818181818182
+0.8947368421052632
 ```
 
 In this regard, the ARIMA model has shown a reasonably high degree of accuracy in predicting directional changes for hotel cancellations across the test set.
+
+The RMSE (root mean square error) is also predicted:
+
+```
+>>> import math
+>>> from sklearn.metrics import mean_squared_error
+
+>>> mse = mean_squared_error(val, predictions)
+>>> rmse = math.sqrt(mse)
+>>> print('RMSE: %f' % rmse)
+
+RMSE: 77.047252
+```
+
 
 ## Monte Carlo Simulation with pyplot
 
