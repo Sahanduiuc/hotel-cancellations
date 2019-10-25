@@ -582,7 +582,7 @@ The same procedures were applied - this time using the second dataset.
 
 The following is the ARIMA configuration obtained using pyramid-arima:
 
-![arima-model-2](arima-model-2.png)
+![arima-model-2](arima-model-2.PNG)
 
 **Predicted vs. Validation**
 
