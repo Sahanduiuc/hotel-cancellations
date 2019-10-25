@@ -505,6 +505,7 @@ The RMSE (root mean square error) is also predicted:
 RMSE: 77.047252
 ```
 
+The RMSE stands at 77 in this case. Note that the units of RMSE are the same as the response variable, in this case - hotel cancellations. With an average cancellation of 94 for all weeks across the validation data, the RMSE of 77 is technically the standard deviation of the unexplained variance. All else being equal, the lower this value, the better.
 
 ## Testing against unseen data
 
