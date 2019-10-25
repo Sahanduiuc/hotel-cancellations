@@ -391,6 +391,10 @@ To do this, cancellations are analysed on a weekly basis (i.e. the number of can
 
 Firstly, data manipulation procedures were carried out using pandas to sum up the number of cancellations per week and order them correctly.
 
+In configuring the ARIMA model, the first 80 observations are used as **training data**, with the following 20 then used as **validation data**.
+
+Once the model has been configured, the last 15 observations are then used as **test data** to gauge the model accuracy on unseen data.
+
 Here is a snippet of the output:
 
 ![cancellationweeks](cancellationweeks.png)
@@ -501,7 +505,7 @@ RMSE: 77.047252
 ```
 
 
-## Monte Carlo Simulation with pyplot
+## Testing against unseen data
 
 Often times, a business may wish to conduct a scenario analysis rather than an outright prediction as above.
 
