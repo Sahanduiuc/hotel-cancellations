@@ -507,52 +507,13 @@ RMSE: 77.047252
 
 ## Testing against unseen data
 
-Often times, a business may wish to conduct a scenario analysis rather than an outright prediction as above.
+Even though the ARIMA model has been trained and the accuracy validated across the validation data, it is still unclear how the model would perform against unseen data (or test data).
 
-One useful visualisation that can be used in this instance is an **overlaid histogram**, or a histogram that displays two separate periods.
-
-Let's consider two time periods:
-
-- Period 1: Weeks 1-20 (July 2015 to November 2015)
-- Period 2: Weeks 21-40 (November 2015 to March 2016)
-
-A Monte Carlo simulation is generated, i.e. the mean and standard deviation for each period is calculated, and 1000 random numbers are generated using the same.
+In this regard, the ARIMA model is used to generate predictions for n=15 using the test.index to specify the unseen data.
 
 ```
-import plotly.plotly as py
-import plotly.graph_objs as go
-
-import numpy as np
-
-m1 = np.mean(tseriesr[1:20]) # mean of distribution (July to November)
-s1 = np.std(tseriesr[1:20]) # standard deviation of distribution
-m2 = np.mean(tseriesr[21:40]) # mean of distribution (November to March)
-s2 = np.std(tseriesr[21:40]) # standard deviation of distribution
-
-x0 = m1 + s1 * np.random.randn(1000)
-x1 = m2 + s2 * np.random.randn(1000)
-
-period1 = go.Histogram(
-    x=x0,
-    opacity=0.75
-)
-period2 = go.Histogram(
-    x=x1,
-    opacity=0.75
-)
-
-data = [period1, period2]
-layout = go.Layout(barmode='overlay')
-fig = go.Figure(data=data, layout=layout)
-
-py.iplot(fig, filename='overlaid histogram')
+test = np.array([[130,202,117,152,131,161,131,139,150,157,173,140,182,143,100]])
 ```
-
-Here is the overlaid histogram:
-
-![monte-carlo](monte-carlo.png)
-
-We can see that for the first period (trace 0), the incidence of cancellations is skewed more to the right. This implies that the hotel has a higher chance of seeing more cancellations during the period of July to November - part of this is during the holiday season which implies that cancellation incidences are more volatile.
 
 # Conclusion
 
