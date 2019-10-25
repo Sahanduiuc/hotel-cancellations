@@ -515,6 +515,34 @@ In this regard, the ARIMA model is used to generate predictions for n=15 using t
 test = np.array([[130,202,117,152,131,161,131,139,150,157,173,140,182,143,100]])
 ```
 
+Firstly, the array is reshaped accordingly:
+
+```
+>>> test=test.reshape(-1)
+>>> test
+
+array([130, 202, 117, 152, 131, 161, 131, 139, 150, 157, 173, 140, 182,
+       143, 100])
+```
+
+Now, the predictions are made, and the RMSE (root mean squared error), MDA (mean directional accuracy) and mean forecast errors are calculated:
+
+```
+>>> predictionnew=pd.DataFrame(Arima_model.predict(n_periods=15), index=test.index)
+>>> predictionnew.columns = ['Unseen_Predicted_Cancellations']
+>>> predictionsnew=predictionnew['Unseen_Predicted_Cancellations']
+
+>>> mse_new = mean_squared_error(test, predictionsnew)
+>>> rmse_new = math.sqrt(mse_new)
+>>> print('RMSE: %f' % rmse_new)
+
+RMSE: 57.955865
+
+>>> mda(test, predictionsnew)
+
+0.8666666666666667
+```
+
 # Conclusion
 
 This has been an illustration of how logistic regression and SVM models can be used to predict hotel cancellations. We have also seen how the Extra Trees Classifier can be used as a feature selection tool to identify the most reliable predictors of customer cancellations. Moreover, the ARIMA model has also been used to predict the degree of hotel cancellations on a week-by-week basis, and the MDA demonstrated 81% accuracy in doing so across the test set.
